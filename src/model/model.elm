@@ -3,21 +3,23 @@ module Model exposing (..)
 import Auxiliar exposing (..)
 import Random
 import Time
+import Matrix exposing (..)
 
-(rows, cols) = (20, 20)
+(rows, cols) = (40, 40)
+winningPoints = 10
 
 startingPos : Int -> List Coordinate
 startingPos n =
   case n of
-    1 -> [(13, 10), (14, 10), (15, 10), (16, 10)]
-    2 -> [(16, 15), (15, 15), (14, 15), (13, 15)]
+    1 -> [(18, 10), (19, 10), (20, 10), (21, 10)]
+    2 -> [(21, 30), (20, 30), (19, 30), (18, 30)]
     _ -> []
 
 type Model = Menu Int | InGame GameModel
 
 type alias GameModel =
   {
-    board: List Tile,
+    board: Matrix Tile,
     players: List(Player),
     fruit: Coordinate,
     seed : Random.Seed,
@@ -37,7 +39,7 @@ type alias Player = {
 
 type TileElement = Empty | PlayerHead Int | PlayerTail Int |
    Fruit | Wall | Collision
-type alias Tile = {row: Int, col: Int, elem: TileElement}
+type alias Tile = {row: Int, col: Int, elem: TileElement, visited : Bool}
 
 getCoordinate : Tile -> Coordinate
 getCoordinate tile =
@@ -48,14 +50,14 @@ initState : Int -> Bool -> GameModel
 initState s b= updateBoard {board = initBoard,
   players = [Player 1 (startingPos 1) (-1, 0),
   Player 2 (startingPos 2) (1, 0)],
-  fruit = (13, 13),
+  fruit = (20, 20),
   seed = Random.initialSeed s,
   cpu = b,
   state = Playing}
 
 updateBoard : GameModel -> GameModel
 updateBoard model =
-  { model | board = List.map (\t -> { t | elem = elemInTile model t}) model.board}
+  { model | board = Matrix.map (\t -> { t | elem = elemInTile model t}) model.board}
 
 elemInTile : GameModel -> Tile -> TileElement
 elemInTile model tile =
@@ -99,14 +101,8 @@ fruitTile : GameModel -> Tile -> Bool
 fruitTile model tile =
   getCoordinate tile == model.fruit
 
-initBoard : List Tile
-initBoard = List.map mapNumToTile (List.range 0 (rows*cols - 1))
-
-mapNumToTile : Int -> Tile
-mapNumToTile n =
-  Tile (n//cols) (n%cols) Empty
-
-
+initBoard : Matrix Tile
+initBoard = Matrix.matrix rows cols (\(x,y) -> {row=x, col=y, elem=Empty, visited=False})
 
 randomCoordinate : Random.Generator Coordinate
 randomCoordinate =
@@ -117,7 +113,8 @@ makeMove model =
   let
     modelAfterMove = updateBoard (checkFruit (movePlayers model))
   in
-    if List.any (\t -> t.elem == Collision) modelAfterMove.board then
+    if List.any (\t -> t.elem == Collision) (Matrix.flatten modelAfterMove.board)
+      || (List.any (\t -> List.length t.snake >= winningPoints+4) model.players) then
       { modelAfterMove | state = Finished}
     else
       modelAfterMove
@@ -182,8 +179,8 @@ changePlayerDir d p =
 getLastDir : List Coordinate -> Coordinate
 getLastDir l =
   let
-    mc1 = get 0 l
-    mc2 = get 1 l
+    mc1 = getFromList 0 l
+    mc2 = getFromList 1 l
   in
     case mc1 of
       Nothing -> (0, 0)

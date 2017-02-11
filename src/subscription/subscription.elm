@@ -5,7 +5,7 @@ import Msg exposing (..)
 import Time exposing (..)
 import Keyboard exposing (..)
 
-timePerTick = 0.5
+timePerTick = 0.1
 
 subscriptions : Model -> Sub Msg
 subscriptions model =

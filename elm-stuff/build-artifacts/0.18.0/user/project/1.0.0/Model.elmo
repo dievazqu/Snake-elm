@@ -1,6 +1,6 @@
 var _user$project$Model$getLastDir = function (l) {
-	var mc2 = A2(_user$project$Auxiliar$get, 1, l);
-	var mc1 = A2(_user$project$Auxiliar$get, 0, l);
+	var mc2 = A2(_user$project$Auxiliar$getFromList, 1, l);
+	var mc1 = A2(_user$project$Auxiliar$getFromList, 0, l);
 	var _p0 = mc1;
 	if (_p0.ctor === 'Nothing') {
 		return {ctor: '_Tuple2', _0: 0, _1: 0};
@@ -93,16 +93,16 @@ var _user$project$Model$startingPos = function (n) {
 		case 1:
 			return {
 				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 13, _1: 10},
+				_0: {ctor: '_Tuple2', _0: 18, _1: 10},
 				_1: {
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 14, _1: 10},
+					_0: {ctor: '_Tuple2', _0: 19, _1: 10},
 					_1: {
 						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 15, _1: 10},
+						_0: {ctor: '_Tuple2', _0: 20, _1: 10},
 						_1: {
 							ctor: '::',
-							_0: {ctor: '_Tuple2', _0: 16, _1: 10},
+							_0: {ctor: '_Tuple2', _0: 21, _1: 10},
 							_1: {ctor: '[]'}
 						}
 					}
@@ -111,16 +111,16 @@ var _user$project$Model$startingPos = function (n) {
 		case 2:
 			return {
 				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 16, _1: 15},
+				_0: {ctor: '_Tuple2', _0: 21, _1: 30},
 				_1: {
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 15, _1: 15},
+					_0: {ctor: '_Tuple2', _0: 20, _1: 30},
 					_1: {
 						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 14, _1: 15},
+						_0: {ctor: '_Tuple2', _0: 19, _1: 30},
 						_1: {
 							ctor: '::',
-							_0: {ctor: '_Tuple2', _0: 13, _1: 15},
+							_0: {ctor: '_Tuple2', _0: 18, _1: 30},
 							_1: {ctor: '[]'}
 						}
 					}
@@ -130,7 +130,8 @@ var _user$project$Model$startingPos = function (n) {
 			return {ctor: '[]'};
 	}
 };
-var _user$project$Model$_p5 = {ctor: '_Tuple2', _0: 20, _1: 20};
+var _user$project$Model$winningPoints = 10;
+var _user$project$Model$_p5 = {ctor: '_Tuple2', _0: 40, _1: 40};
 var _user$project$Model$rows = _user$project$Model$_p5._0;
 var _user$project$Model$cols = _user$project$Model$_p5._1;
 var _user$project$Model$borderTile = function (t) {
@@ -182,9 +183,9 @@ var _user$project$Model$Player = F3(
 	function (a, b, c) {
 		return {id: a, snake: b, dir: c};
 	});
-var _user$project$Model$Tile = F3(
-	function (a, b, c) {
-		return {row: a, col: b, elem: c};
+var _user$project$Model$Tile = F4(
+	function (a, b, c, d) {
+		return {row: a, col: b, elem: c, visited: d};
 	});
 var _user$project$Model$InGame = function (a) {
 	return {ctor: 'InGame', _0: a};
@@ -246,7 +247,7 @@ var _user$project$Model$updateBoard = function (model) {
 		model,
 		{
 			board: A2(
-				_elm_lang$core$List$map,
+				_chendrix$elm_matrix$Matrix$map,
 				function (t) {
 					return _elm_lang$core$Native_Utils.update(
 						t,
@@ -261,26 +262,30 @@ var _user$project$Model$makeMove = function (model) {
 	var modelAfterMove = _user$project$Model$updateBoard(
 		_user$project$Model$checkFruit(
 			_user$project$Model$movePlayers(model)));
-	return A2(
+	return (A2(
 		_elm_lang$core$List$any,
 		function (t) {
 			return _elm_lang$core$Native_Utils.eq(t.elem, _user$project$Model$Collision);
 		},
-		modelAfterMove.board) ? _elm_lang$core$Native_Utils.update(
+		_chendrix$elm_matrix$Matrix$flatten(modelAfterMove.board)) || A2(
+		_elm_lang$core$List$any,
+		function (t) {
+			return _elm_lang$core$Native_Utils.cmp(
+				_elm_lang$core$List$length(t.snake),
+				_user$project$Model$winningPoints + 4) > -1;
+		},
+		model.players)) ? _elm_lang$core$Native_Utils.update(
 		modelAfterMove,
 		{state: _user$project$Model$Finished}) : modelAfterMove;
 };
-var _user$project$Model$mapNumToTile = function (n) {
-	return A3(
-		_user$project$Model$Tile,
-		(n / _user$project$Model$cols) | 0,
-		A2(_elm_lang$core$Basics_ops['%'], n, _user$project$Model$cols),
-		_user$project$Model$Empty);
-};
-var _user$project$Model$initBoard = A2(
-	_elm_lang$core$List$map,
-	_user$project$Model$mapNumToTile,
-	A2(_elm_lang$core$List$range, 0, (_user$project$Model$rows * _user$project$Model$cols) - 1));
+var _user$project$Model$initBoard = A3(
+	_chendrix$elm_matrix$Matrix$matrix,
+	_user$project$Model$rows,
+	_user$project$Model$cols,
+	function (_p10) {
+		var _p11 = _p10;
+		return {row: _p11._0, col: _p11._1, elem: _user$project$Model$Empty, visited: false};
+	});
 var _user$project$Model$initState = F2(
 	function (s, b) {
 		return _user$project$Model$updateBoard(
@@ -303,7 +308,7 @@ var _user$project$Model$initState = F2(
 						_1: {ctor: '[]'}
 					}
 				},
-				fruit: {ctor: '_Tuple2', _0: 13, _1: 13},
+				fruit: {ctor: '_Tuple2', _0: 20, _1: 20},
 				seed: _elm_lang$core$Random$initialSeed(s),
 				cpu: b,
 				state: _user$project$Model$Playing

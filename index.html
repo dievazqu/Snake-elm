@@ -4170,6 +4170,133 @@ var _elm_lang$core$Platform$Program = {ctor: 'Program'};
 var _elm_lang$core$Platform$Task = {ctor: 'Task'};
 var _elm_lang$core$Platform$ProcessId = {ctor: 'ProcessId'};
 var _elm_lang$core$Platform$Router = {ctor: 'Router'};
+var _chendrix$elm_matrix$Matrix$rowCount = function (m) {
+	return _elm_lang$core$Array$length(m);
+};
+var _chendrix$elm_matrix$Matrix$colCount = function (m) {
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		0,
+		A2(
+			_elm_lang$core$Maybe$map,
+			_elm_lang$core$Array$length,
+			A2(_elm_lang$core$Array$get, 0, m)));
+};
+var _chendrix$elm_matrix$Matrix$fromList = function (l) {
+	return _elm_lang$core$Array$fromList(
+		A2(_elm_lang$core$List$map, _elm_lang$core$Array$fromList, l));
+};
+var _chendrix$elm_matrix$Matrix$toList = function (m) {
+	return _elm_lang$core$Array$toList(
+		A2(_elm_lang$core$Array$map, _elm_lang$core$Array$toList, m));
+};
+var _chendrix$elm_matrix$Matrix$flatten = function (m) {
+	return _elm_lang$core$List$concat(
+		_chendrix$elm_matrix$Matrix$toList(m));
+};
+var _chendrix$elm_matrix$Matrix$map = F2(
+	function (f, m) {
+		return A2(
+			_elm_lang$core$Array$map,
+			_elm_lang$core$Array$map(f),
+			m);
+	});
+var _chendrix$elm_matrix$Matrix$col = _elm_lang$core$Tuple$second;
+var _chendrix$elm_matrix$Matrix$row = _elm_lang$core$Tuple$first;
+var _chendrix$elm_matrix$Matrix$get = F2(
+	function (location, m) {
+		return A2(
+			_elm_lang$core$Maybe$andThen,
+			_elm_lang$core$Array$get(
+				_chendrix$elm_matrix$Matrix$col(location)),
+			A2(
+				_elm_lang$core$Array$get,
+				_chendrix$elm_matrix$Matrix$row(location),
+				m));
+	});
+var _chendrix$elm_matrix$Matrix$update = F3(
+	function (location, f, m) {
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			m,
+			A2(
+				_elm_lang$core$Maybe$map,
+				function (current) {
+					return A2(
+						_elm_lang$core$Maybe$withDefault,
+						m,
+						A2(
+							_elm_lang$core$Maybe$map,
+							function (oldRow) {
+								return function (newRow) {
+									return A3(
+										_elm_lang$core$Array$set,
+										_chendrix$elm_matrix$Matrix$row(location),
+										newRow,
+										m);
+								}(
+									A3(
+										_elm_lang$core$Array$set,
+										_chendrix$elm_matrix$Matrix$col(location),
+										f(current),
+										oldRow));
+							},
+							A2(
+								_elm_lang$core$Array$get,
+								_chendrix$elm_matrix$Matrix$row(location),
+								m)));
+				},
+				A2(_chendrix$elm_matrix$Matrix$get, location, m)));
+	});
+var _chendrix$elm_matrix$Matrix$set = F3(
+	function (location, value, m) {
+		return A3(
+			_chendrix$elm_matrix$Matrix$update,
+			location,
+			_elm_lang$core$Basics$always(value),
+			m);
+	});
+var _chendrix$elm_matrix$Matrix$loc = F2(
+	function (v0, v1) {
+		return {ctor: '_Tuple2', _0: v0, _1: v1};
+	});
+var _chendrix$elm_matrix$Matrix$matrix = F3(
+	function (numRows, numCols, f) {
+		return A2(
+			_elm_lang$core$Array$initialize,
+			numRows,
+			function (row) {
+				return A2(
+					_elm_lang$core$Array$initialize,
+					numCols,
+					function (col) {
+						return f(
+							A2(_chendrix$elm_matrix$Matrix$loc, row, col));
+					});
+			});
+	});
+var _chendrix$elm_matrix$Matrix$square = function (size) {
+	return A2(_chendrix$elm_matrix$Matrix$matrix, size, size);
+};
+var _chendrix$elm_matrix$Matrix$mapWithLocation = F2(
+	function (f, m) {
+		return A2(
+			_elm_lang$core$Array$indexedMap,
+			F2(
+				function (rowNum, row) {
+					return A2(
+						_elm_lang$core$Array$indexedMap,
+						F2(
+							function (colNum, element) {
+								return A2(
+									f,
+									A2(_chendrix$elm_matrix$Matrix$loc, rowNum, colNum),
+									element);
+							}),
+						row);
+				}),
+			m);
+	});
 var _elm_lang$core$Task$onError = _elm_lang$core$Native_Scheduler.onError;
 var _elm_lang$core$Task$andThen = _elm_lang$core$Native_Scheduler.andThen;
 var _elm_lang$core$Task$spawnCmd = F2(
@@ -9396,9 +9523,9 @@ var _user$project$Auxiliar$getLast = function (l) {
 		return _elm_lang$core$Maybe$Nothing;
 	}
 };
-var _user$project$Auxiliar$get = F2(
+var _user$project$Auxiliar$getFromList = F2(
 	function (n, l) {
-		get:
+		getFromList:
 		while (true) {
 			var _p5 = l;
 			if (_p5.ctor === '[]') {
@@ -9414,7 +9541,7 @@ var _user$project$Auxiliar$get = F2(
 							_v5 = _p5._1;
 						n = _v4;
 						l = _v5;
-						continue get;
+						continue getFromList;
 					}
 				}
 			}
@@ -9440,8 +9567,8 @@ var _user$project$Auxiliar$mapFilter = F3(
 		}
 	});
 var _user$project$Model$getLastDir = function (l) {
-	var mc2 = A2(_user$project$Auxiliar$get, 1, l);
-	var mc1 = A2(_user$project$Auxiliar$get, 0, l);
+	var mc2 = A2(_user$project$Auxiliar$getFromList, 1, l);
+	var mc1 = A2(_user$project$Auxiliar$getFromList, 0, l);
 	var _p0 = mc1;
 	if (_p0.ctor === 'Nothing') {
 		return {ctor: '_Tuple2', _0: 0, _1: 0};
@@ -9534,16 +9661,16 @@ var _user$project$Model$startingPos = function (n) {
 		case 1:
 			return {
 				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 13, _1: 10},
+				_0: {ctor: '_Tuple2', _0: 18, _1: 10},
 				_1: {
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 14, _1: 10},
+					_0: {ctor: '_Tuple2', _0: 19, _1: 10},
 					_1: {
 						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 15, _1: 10},
+						_0: {ctor: '_Tuple2', _0: 20, _1: 10},
 						_1: {
 							ctor: '::',
-							_0: {ctor: '_Tuple2', _0: 16, _1: 10},
+							_0: {ctor: '_Tuple2', _0: 21, _1: 10},
 							_1: {ctor: '[]'}
 						}
 					}
@@ -9552,16 +9679,16 @@ var _user$project$Model$startingPos = function (n) {
 		case 2:
 			return {
 				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 16, _1: 15},
+				_0: {ctor: '_Tuple2', _0: 21, _1: 30},
 				_1: {
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 15, _1: 15},
+					_0: {ctor: '_Tuple2', _0: 20, _1: 30},
 					_1: {
 						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 14, _1: 15},
+						_0: {ctor: '_Tuple2', _0: 19, _1: 30},
 						_1: {
 							ctor: '::',
-							_0: {ctor: '_Tuple2', _0: 13, _1: 15},
+							_0: {ctor: '_Tuple2', _0: 18, _1: 30},
 							_1: {ctor: '[]'}
 						}
 					}
@@ -9571,7 +9698,8 @@ var _user$project$Model$startingPos = function (n) {
 			return {ctor: '[]'};
 	}
 };
-var _user$project$Model$_p5 = {ctor: '_Tuple2', _0: 20, _1: 20};
+var _user$project$Model$winningPoints = 10;
+var _user$project$Model$_p5 = {ctor: '_Tuple2', _0: 40, _1: 40};
 var _user$project$Model$rows = _user$project$Model$_p5._0;
 var _user$project$Model$cols = _user$project$Model$_p5._1;
 var _user$project$Model$borderTile = function (t) {
@@ -9623,9 +9751,9 @@ var _user$project$Model$Player = F3(
 	function (a, b, c) {
 		return {id: a, snake: b, dir: c};
 	});
-var _user$project$Model$Tile = F3(
-	function (a, b, c) {
-		return {row: a, col: b, elem: c};
+var _user$project$Model$Tile = F4(
+	function (a, b, c, d) {
+		return {row: a, col: b, elem: c, visited: d};
 	});
 var _user$project$Model$InGame = function (a) {
 	return {ctor: 'InGame', _0: a};
@@ -9687,7 +9815,7 @@ var _user$project$Model$updateBoard = function (model) {
 		model,
 		{
 			board: A2(
-				_elm_lang$core$List$map,
+				_chendrix$elm_matrix$Matrix$map,
 				function (t) {
 					return _elm_lang$core$Native_Utils.update(
 						t,
@@ -9702,26 +9830,30 @@ var _user$project$Model$makeMove = function (model) {
 	var modelAfterMove = _user$project$Model$updateBoard(
 		_user$project$Model$checkFruit(
 			_user$project$Model$movePlayers(model)));
-	return A2(
+	return (A2(
 		_elm_lang$core$List$any,
 		function (t) {
 			return _elm_lang$core$Native_Utils.eq(t.elem, _user$project$Model$Collision);
 		},
-		modelAfterMove.board) ? _elm_lang$core$Native_Utils.update(
+		_chendrix$elm_matrix$Matrix$flatten(modelAfterMove.board)) || A2(
+		_elm_lang$core$List$any,
+		function (t) {
+			return _elm_lang$core$Native_Utils.cmp(
+				_elm_lang$core$List$length(t.snake),
+				_user$project$Model$winningPoints + 4) > -1;
+		},
+		model.players)) ? _elm_lang$core$Native_Utils.update(
 		modelAfterMove,
 		{state: _user$project$Model$Finished}) : modelAfterMove;
 };
-var _user$project$Model$mapNumToTile = function (n) {
-	return A3(
-		_user$project$Model$Tile,
-		(n / _user$project$Model$cols) | 0,
-		A2(_elm_lang$core$Basics_ops['%'], n, _user$project$Model$cols),
-		_user$project$Model$Empty);
-};
-var _user$project$Model$initBoard = A2(
-	_elm_lang$core$List$map,
-	_user$project$Model$mapNumToTile,
-	A2(_elm_lang$core$List$range, 0, (_user$project$Model$rows * _user$project$Model$cols) - 1));
+var _user$project$Model$initBoard = A3(
+	_chendrix$elm_matrix$Matrix$matrix,
+	_user$project$Model$rows,
+	_user$project$Model$cols,
+	function (_p10) {
+		var _p11 = _p10;
+		return {row: _p11._0, col: _p11._1, elem: _user$project$Model$Empty, visited: false};
+	});
 var _user$project$Model$initState = F2(
 	function (s, b) {
 		return _user$project$Model$updateBoard(
@@ -9744,7 +9876,7 @@ var _user$project$Model$initState = F2(
 						_1: {ctor: '[]'}
 					}
 				},
-				fruit: {ctor: '_Tuple2', _0: 13, _1: 13},
+				fruit: {ctor: '_Tuple2', _0: 20, _1: 20},
 				seed: _elm_lang$core$Random$initialSeed(s),
 				cpu: b,
 				state: _user$project$Model$Playing
@@ -9805,20 +9937,13 @@ var _user$project$CPU$nextCoordinates = function (node) {
 		},
 		_user$project$CPU$validDirections(node.lastDir));
 };
-var _user$project$CPU$validNode = F3(
-	function (model, visited, bn) {
-		var mtile = A2(
-			_elm_lang$core$List$filter,
-			function (a) {
-				return _elm_lang$core$Native_Utils.eq(
-					_user$project$Model$getCoordinate(a),
-					bn.tile);
-			},
-			model.board);
+var _user$project$CPU$validNode = F2(
+	function (model, bn) {
+		var mtile = A2(_chendrix$elm_matrix$Matrix$get, bn.tile, model.board);
 		var _p10 = mtile;
-		if ((_p10.ctor === '::') && (_p10._1.ctor === '[]')) {
+		if (_p10.ctor === 'Just') {
 			var _p11 = _p10._0;
-			return (_elm_lang$core$Native_Utils.eq(_p11.elem, _user$project$Model$Empty) || _elm_lang$core$Native_Utils.eq(_p11.elem, _user$project$Model$Fruit)) && (!A2(_elm_lang$core$List$member, bn.tile, visited));
+			return (_elm_lang$core$Native_Utils.eq(_p11.elem, _user$project$Model$Empty) || _elm_lang$core$Native_Utils.eq(_p11.elem, _user$project$Model$Fruit)) && (!_p11.visited);
 		} else {
 			return false;
 		}
@@ -9832,10 +9957,7 @@ var _user$project$CPU$startingNodes = F2(
 		} else {
 			return A2(
 				_elm_lang$core$List$filter,
-				A2(
-					_user$project$CPU$validNode,
-					m,
-					{ctor: '[]'}),
+				_user$project$CPU$validNode(m),
 				A2(
 					_elm_lang$core$List$map,
 					function (x) {
@@ -9848,8 +9970,31 @@ var _user$project$CPU$startingNodes = F2(
 					_user$project$CPU$validDirections(p.dir)));
 		}
 	});
-var _user$project$CPU$bfsTransversal = F3(
-	function (model, visited, queue) {
+var _user$project$CPU$visite = F2(
+	function (model, list) {
+		return A3(
+			_elm_lang$core$List$foldr,
+			F2(
+				function (n, m) {
+					return _elm_lang$core$Native_Utils.update(
+						m,
+						{
+							board: A3(
+								_chendrix$elm_matrix$Matrix$update,
+								n.tile,
+								function (x) {
+									return _elm_lang$core$Native_Utils.update(
+										x,
+										{visited: true});
+								},
+								m.board)
+						});
+				}),
+			model,
+			list);
+	});
+var _user$project$CPU$bfsTransversal = F2(
+	function (model, queue) {
 		bfsTransversal:
 		while (true) {
 			var _p13 = queue;
@@ -9859,27 +10004,17 @@ var _user$project$CPU$bfsTransversal = F3(
 					var nc = _user$project$CPU$nextCoordinates(_p14);
 					var validnc = A2(
 						_elm_lang$core$List$filter,
-						A2(_user$project$CPU$validNode, model, visited),
+						_user$project$CPU$validNode(model),
 						nc);
 					if (_elm_lang$core$Native_Utils.eq(model.fruit, _p14.tile) || _elm_lang$core$Native_Utils.eq(
 						_elm_lang$core$List$length(validnc),
 						0)) {
 						return _elm_lang$core$Maybe$Just(_p14.dir);
 					} else {
-						var _v8 = model,
-							_v9 = A2(
-							_elm_lang$core$Basics_ops['++'],
-							visited,
-							A2(
-								_elm_lang$core$List$map,
-								function (x) {
-									return x.tile;
-								},
-								validnc)),
-							_v10 = validnc;
+						var _v8 = A2(_user$project$CPU$visite, model, validnc),
+							_v9 = validnc;
 						model = _v8;
-						visited = _v9;
-						queue = _v10;
+						queue = _v9;
 						continue bfsTransversal;
 					}
 				} else {
@@ -9887,32 +10022,16 @@ var _user$project$CPU$bfsTransversal = F3(
 					var nc = _user$project$CPU$nextCoordinates(_p15);
 					var validnc = A2(
 						_elm_lang$core$List$filter,
-						A2(_user$project$CPU$validNode, model, visited),
+						_user$project$CPU$validNode(model),
 						nc);
-					if (_elm_lang$core$Native_Utils.cmp(
-						_elm_lang$core$List$length(queue),
-						100) > -1) {
+					if (_elm_lang$core$Native_Utils.eq(model.fruit, _p15.tile)) {
 						return _elm_lang$core$Maybe$Just(_p15.dir);
 					} else {
-						if (_elm_lang$core$Native_Utils.eq(model.fruit, _p15.tile)) {
-							return _elm_lang$core$Maybe$Just(_p15.dir);
-						} else {
-							var _v11 = model,
-								_v12 = A2(
-								_elm_lang$core$Basics_ops['++'],
-								visited,
-								A2(
-									_elm_lang$core$List$map,
-									function (x) {
-										return x.tile;
-									},
-									validnc)),
-								_v13 = A2(_elm_lang$core$Basics_ops['++'], _p13._1, validnc);
-							model = _v11;
-							visited = _v12;
-							queue = _v13;
-							continue bfsTransversal;
-						}
+						var _v10 = A2(_user$project$CPU$visite, model, validnc),
+							_v11 = A2(_elm_lang$core$Basics_ops['++'], _p13._1, validnc);
+						model = _v10;
+						queue = _v11;
+						continue bfsTransversal;
 					}
 				}
 			} else {
@@ -9920,19 +10039,25 @@ var _user$project$CPU$bfsTransversal = F3(
 			}
 		}
 	});
+var _user$project$CPU$clearMatrix = function (m) {
+	return A2(
+		_chendrix$elm_matrix$Matrix$map,
+		function (x) {
+			return _elm_lang$core$Native_Utils.update(
+				x,
+				{visited: false});
+		},
+		m);
+};
 var _user$project$CPU$newCpuDirection = F2(
 	function (m, p) {
-		var initNodes = A2(_user$project$CPU$startingNodes, m, p);
-		var bfsAnswer = A3(
-			_user$project$CPU$bfsTransversal,
+		var cleanedBoard = _elm_lang$core$Native_Utils.update(
 			m,
-			A2(
-				_elm_lang$core$List$map,
-				function (x) {
-					return x.tile;
-				},
-				initNodes),
-			initNodes);
+			{
+				board: _user$project$CPU$clearMatrix(m.board)
+			});
+		var initNodes = A2(_user$project$CPU$startingNodes, cleanedBoard, p);
+		var bfsAnswer = A2(_user$project$CPU$bfsTransversal, cleanedBoard, initNodes);
 		var _p16 = bfsAnswer;
 		if (_p16.ctor === 'Nothing') {
 			return p;
@@ -10220,7 +10345,8 @@ var _user$project$GameView$gameView = function (model) {
 						_0: _user$project$GameView$centering,
 						_1: {ctor: '[]'}
 					},
-					_user$project$GameView$boardToDiv(model.board)),
+					_user$project$GameView$boardToDiv(
+						_chendrix$elm_matrix$Matrix$flatten(model.board))),
 				_1: {ctor: '[]'}
 			}
 		});
@@ -10566,7 +10692,7 @@ var _user$project$Update$update = F2(
 			};
 		}
 	});
-var _user$project$Subscription$timePerTick = 0.5;
+var _user$project$Subscription$timePerTick = 0.1;
 var _user$project$Subscription$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$batch(
 		{

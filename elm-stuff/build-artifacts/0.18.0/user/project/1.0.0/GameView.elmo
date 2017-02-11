@@ -252,7 +252,8 @@ var _user$project$GameView$gameView = function (model) {
 						_0: _user$project$GameView$centering,
 						_1: {ctor: '[]'}
 					},
-					_user$project$GameView$boardToDiv(model.board)),
+					_user$project$GameView$boardToDiv(
+						_chendrix$elm_matrix$Matrix$flatten(model.board))),
 				_1: {ctor: '[]'}
 			}
 		});
