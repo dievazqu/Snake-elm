@@ -21,9 +21,9 @@ var _user$project$Auxiliar$getLast = function (l) {
 		return _elm_lang$core$Maybe$Nothing;
 	}
 };
-var _user$project$Auxiliar$get = F2(
+var _user$project$Auxiliar$getFromList = F2(
 	function (n, l) {
-		get:
+		getFromList:
 		while (true) {
 			var _p5 = l;
 			if (_p5.ctor === '[]') {
@@ -39,7 +39,7 @@ var _user$project$Auxiliar$get = F2(
 							_v5 = _p5._1;
 						n = _v4;
 						l = _v5;
-						continue get;
+						continue getFromList;
 					}
 				}
 			}

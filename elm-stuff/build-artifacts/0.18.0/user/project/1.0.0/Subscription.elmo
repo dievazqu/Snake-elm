@@ -1,4 +1,4 @@
-var _user$project$Subscription$timePerTick = 0.5;
+var _user$project$Subscription$timePerTick = 0.1;
 var _user$project$Subscription$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$batch(
 		{

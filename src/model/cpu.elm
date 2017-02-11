@@ -2,16 +2,22 @@ module CPU exposing (cpuAction)
 
 import Model exposing (..)
 import Auxiliar exposing (..)
+import Matrix exposing (..)
 
 cpuAction : GameModel -> GameModel
 cpuAction m =
   { m | players = mapFilter (newCpuDirection m) (\p -> p.id == 2) m.players}
 
+clearMatrix : (Matrix Tile) -> Matrix Tile
+clearMatrix m =
+  Matrix.map (\x -> {x | visited = False}) m
+
 newCpuDirection : GameModel -> Player -> Player
 newCpuDirection m p =
   let
-    initNodes = startingNodes m p
-    bfsAnswer = bfsTransversal m (List.map (\x->x.tile) initNodes) initNodes
+    cleanedBoard = { m | board = (clearMatrix m.board)}
+    initNodes = startingNodes cleanedBoard p
+    bfsAnswer = bfsTransversal cleanedBoard initNodes
   in
     case bfsAnswer of
       Nothing -> p
@@ -37,45 +43,47 @@ type alias BfsNode =
 
 
 -- Agrego a la queue solo los validos --
-bfsTransversal : GameModel -> (List Coordinate) -> (List BfsNode) -> Maybe Coordinate
-bfsTransversal model visited queue =
+bfsTransversal : GameModel -> (List BfsNode) -> Maybe Coordinate
+bfsTransversal model queue =
   case queue of
     [q] ->
       let
         nc = nextCoordinates q
-        validnc = List.filter (validNode model visited) nc
+        validnc = List.filter (validNode model) nc
       in
         if model.fruit == q.tile || List.length validnc == 0 then
           Just q.dir
         else
-          bfsTransversal model
-           (visited++(List.map (\x -> x.tile) validnc))
+          bfsTransversal (visite model validnc)
            validnc
     (q::qs) ->
       let
         nc = nextCoordinates q
-        validnc = List.filter (validNode model visited) nc
+        validnc = List.filter (validNode model) nc
       in
-        if List.length queue >= 100 then
-          Just q.dir
-        else
         if model.fruit == q.tile then
           Just q.dir
         else
-          bfsTransversal model
-           (visited++(List.map (\x -> x.tile) validnc))
+          bfsTransversal (visite model validnc)
            (qs++validnc)
     _ -> Nothing
 
-validNode : GameModel -> (List Coordinate) -> BfsNode -> Bool
-validNode model visited bn =
+visite : GameModel -> List BfsNode -> GameModel
+visite model list =
+  List.foldr (\n m ->
+    { m |
+      board = Matrix.update n.tile (\x -> { x | visited = True}) m.board})
+       model list
+
+validNode : GameModel -> BfsNode -> Bool
+validNode model bn =
     let
-      mtile = List.filter (\a -> getCoordinate a == bn.tile) model.board
+      mtile = Matrix.get bn.tile model.board
     in
       case mtile of
-        [tile] ->
-          (tile.elem == Empty || tile.elem == Fruit) && not (List.member bn.tile visited)
-        _ -> False
+        Just tile ->
+          (tile.elem == Empty || tile.elem == Fruit) && not (tile.visited)
+        Nothing -> False
 
 nextCoordinates : BfsNode -> List BfsNode
 nextCoordinates node =
@@ -92,7 +100,7 @@ startingNodes m p =
     case mh of
       Nothing -> []
       Just c ->
-        List.filter (validNode m [])
+        List.filter (validNode m)
         (List.map (\x -> {
           tile = sum x c,
           lastDir = x,

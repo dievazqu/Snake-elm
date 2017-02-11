@@ -53,20 +53,13 @@ var _user$project$CPU$nextCoordinates = function (node) {
 		},
 		_user$project$CPU$validDirections(node.lastDir));
 };
-var _user$project$CPU$validNode = F3(
-	function (model, visited, bn) {
-		var mtile = A2(
-			_elm_lang$core$List$filter,
-			function (a) {
-				return _elm_lang$core$Native_Utils.eq(
-					_user$project$Model$getCoordinate(a),
-					bn.tile);
-			},
-			model.board);
+var _user$project$CPU$validNode = F2(
+	function (model, bn) {
+		var mtile = A2(_chendrix$elm_matrix$Matrix$get, bn.tile, model.board);
 		var _p10 = mtile;
-		if ((_p10.ctor === '::') && (_p10._1.ctor === '[]')) {
+		if (_p10.ctor === 'Just') {
 			var _p11 = _p10._0;
-			return (_elm_lang$core$Native_Utils.eq(_p11.elem, _user$project$Model$Empty) || _elm_lang$core$Native_Utils.eq(_p11.elem, _user$project$Model$Fruit)) && (!A2(_elm_lang$core$List$member, bn.tile, visited));
+			return (_elm_lang$core$Native_Utils.eq(_p11.elem, _user$project$Model$Empty) || _elm_lang$core$Native_Utils.eq(_p11.elem, _user$project$Model$Fruit)) && (!_p11.visited);
 		} else {
 			return false;
 		}
@@ -80,10 +73,7 @@ var _user$project$CPU$startingNodes = F2(
 		} else {
 			return A2(
 				_elm_lang$core$List$filter,
-				A2(
-					_user$project$CPU$validNode,
-					m,
-					{ctor: '[]'}),
+				_user$project$CPU$validNode(m),
 				A2(
 					_elm_lang$core$List$map,
 					function (x) {
@@ -96,8 +86,31 @@ var _user$project$CPU$startingNodes = F2(
 					_user$project$CPU$validDirections(p.dir)));
 		}
 	});
-var _user$project$CPU$bfsTransversal = F3(
-	function (model, visited, queue) {
+var _user$project$CPU$visite = F2(
+	function (model, list) {
+		return A3(
+			_elm_lang$core$List$foldr,
+			F2(
+				function (n, m) {
+					return _elm_lang$core$Native_Utils.update(
+						m,
+						{
+							board: A3(
+								_chendrix$elm_matrix$Matrix$update,
+								n.tile,
+								function (x) {
+									return _elm_lang$core$Native_Utils.update(
+										x,
+										{visited: true});
+								},
+								m.board)
+						});
+				}),
+			model,
+			list);
+	});
+var _user$project$CPU$bfsTransversal = F2(
+	function (model, queue) {
 		bfsTransversal:
 		while (true) {
 			var _p13 = queue;
@@ -107,27 +120,17 @@ var _user$project$CPU$bfsTransversal = F3(
 					var nc = _user$project$CPU$nextCoordinates(_p14);
 					var validnc = A2(
 						_elm_lang$core$List$filter,
-						A2(_user$project$CPU$validNode, model, visited),
+						_user$project$CPU$validNode(model),
 						nc);
 					if (_elm_lang$core$Native_Utils.eq(model.fruit, _p14.tile) || _elm_lang$core$Native_Utils.eq(
 						_elm_lang$core$List$length(validnc),
 						0)) {
 						return _elm_lang$core$Maybe$Just(_p14.dir);
 					} else {
-						var _v8 = model,
-							_v9 = A2(
-							_elm_lang$core$Basics_ops['++'],
-							visited,
-							A2(
-								_elm_lang$core$List$map,
-								function (x) {
-									return x.tile;
-								},
-								validnc)),
-							_v10 = validnc;
+						var _v8 = A2(_user$project$CPU$visite, model, validnc),
+							_v9 = validnc;
 						model = _v8;
-						visited = _v9;
-						queue = _v10;
+						queue = _v9;
 						continue bfsTransversal;
 					}
 				} else {
@@ -135,32 +138,16 @@ var _user$project$CPU$bfsTransversal = F3(
 					var nc = _user$project$CPU$nextCoordinates(_p15);
 					var validnc = A2(
 						_elm_lang$core$List$filter,
-						A2(_user$project$CPU$validNode, model, visited),
+						_user$project$CPU$validNode(model),
 						nc);
-					if (_elm_lang$core$Native_Utils.cmp(
-						_elm_lang$core$List$length(queue),
-						100) > -1) {
+					if (_elm_lang$core$Native_Utils.eq(model.fruit, _p15.tile)) {
 						return _elm_lang$core$Maybe$Just(_p15.dir);
 					} else {
-						if (_elm_lang$core$Native_Utils.eq(model.fruit, _p15.tile)) {
-							return _elm_lang$core$Maybe$Just(_p15.dir);
-						} else {
-							var _v11 = model,
-								_v12 = A2(
-								_elm_lang$core$Basics_ops['++'],
-								visited,
-								A2(
-									_elm_lang$core$List$map,
-									function (x) {
-										return x.tile;
-									},
-									validnc)),
-								_v13 = A2(_elm_lang$core$Basics_ops['++'], _p13._1, validnc);
-							model = _v11;
-							visited = _v12;
-							queue = _v13;
-							continue bfsTransversal;
-						}
+						var _v10 = A2(_user$project$CPU$visite, model, validnc),
+							_v11 = A2(_elm_lang$core$Basics_ops['++'], _p13._1, validnc);
+						model = _v10;
+						queue = _v11;
+						continue bfsTransversal;
 					}
 				}
 			} else {
@@ -168,19 +155,25 @@ var _user$project$CPU$bfsTransversal = F3(
 			}
 		}
 	});
+var _user$project$CPU$clearMatrix = function (m) {
+	return A2(
+		_chendrix$elm_matrix$Matrix$map,
+		function (x) {
+			return _elm_lang$core$Native_Utils.update(
+				x,
+				{visited: false});
+		},
+		m);
+};
 var _user$project$CPU$newCpuDirection = F2(
 	function (m, p) {
-		var initNodes = A2(_user$project$CPU$startingNodes, m, p);
-		var bfsAnswer = A3(
-			_user$project$CPU$bfsTransversal,
+		var cleanedBoard = _elm_lang$core$Native_Utils.update(
 			m,
-			A2(
-				_elm_lang$core$List$map,
-				function (x) {
-					return x.tile;
-				},
-				initNodes),
-			initNodes);
+			{
+				board: _user$project$CPU$clearMatrix(m.board)
+			});
+		var initNodes = A2(_user$project$CPU$startingNodes, cleanedBoard, p);
+		var bfsAnswer = A2(_user$project$CPU$bfsTransversal, cleanedBoard, initNodes);
 		var _p16 = bfsAnswer;
 		if (_p16.ctor === 'Nothing') {
 			return p;

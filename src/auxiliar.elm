@@ -1,4 +1,4 @@
-module Auxiliar exposing (mapFilter, removeLast, addC, get)
+module Auxiliar exposing (mapFilter, removeLast, addC, getFromList)
 
 mapFilter : (a -> a) -> ( a -> Bool) -> List a -> List a
 mapFilter m f l =
@@ -10,8 +10,8 @@ mapFilter m f l =
       else
         x::(mapFilter m f xs)
 
-get : Int -> List a -> Maybe a
-get n l =
+getFromList : Int -> List a -> Maybe a
+getFromList n l =
   case l of
     [] -> Nothing
     (x::xs) ->
@@ -20,7 +20,7 @@ get n l =
     else if n == 0 then
       Just x
     else
-      get (n-1) xs
+      getFromList (n-1) xs
 
 getLast : List a -> Maybe a
 getLast l =

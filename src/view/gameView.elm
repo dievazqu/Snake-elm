@@ -4,12 +4,13 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Msg exposing (Msg)
 import Model exposing (..)
+import Matrix exposing (..)
 
 gameView : GameModel -> Html Msg
 gameView model =
   div [ wrapperStyle] [
     (scoreboards model),
-    div [ centering ] (boardToDiv model.board)
+    div [ centering ] (boardToDiv (Matrix.flatten model.board))
     ]
 
 wrapperStyle : Html.Attribute Msg
