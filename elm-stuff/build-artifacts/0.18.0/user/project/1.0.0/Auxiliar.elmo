@@ -1,0 +1,66 @@
+var _user$project$Auxiliar$addC = F2(
+	function (_p1, _p0) {
+		var _p2 = _p1;
+		var _p3 = _p0;
+		return {ctor: '_Tuple2', _0: _p2._0 + _p3._0, _1: _p2._1 + _p3._1};
+	});
+var _user$project$Auxiliar$removeLast = function (l) {
+	return A2(
+		_elm_lang$core$List$take,
+		_elm_lang$core$List$length(l) - 1,
+		l);
+};
+var _user$project$Auxiliar$getLast = function (l) {
+	var _p4 = A2(
+		_elm_lang$core$List$take,
+		1,
+		_elm_lang$core$List$reverse(l));
+	if ((_p4.ctor === '::') && (_p4._1.ctor === '[]')) {
+		return _elm_lang$core$Maybe$Just(_p4._0);
+	} else {
+		return _elm_lang$core$Maybe$Nothing;
+	}
+};
+var _user$project$Auxiliar$get = F2(
+	function (n, l) {
+		get:
+		while (true) {
+			var _p5 = l;
+			if (_p5.ctor === '[]') {
+				return _elm_lang$core$Maybe$Nothing;
+			} else {
+				if (_elm_lang$core$Native_Utils.cmp(n, 0) < 0) {
+					return _elm_lang$core$Maybe$Nothing;
+				} else {
+					if (_elm_lang$core$Native_Utils.eq(n, 0)) {
+						return _elm_lang$core$Maybe$Just(_p5._0);
+					} else {
+						var _v4 = n - 1,
+							_v5 = _p5._1;
+						n = _v4;
+						l = _v5;
+						continue get;
+					}
+				}
+			}
+		}
+	});
+var _user$project$Auxiliar$mapFilter = F3(
+	function (m, f, l) {
+		var _p6 = l;
+		if (_p6.ctor === '[]') {
+			return {ctor: '[]'};
+		} else {
+			var _p8 = _p6._1;
+			var _p7 = _p6._0;
+			return f(_p7) ? {
+				ctor: '::',
+				_0: m(_p7),
+				_1: A3(_user$project$Auxiliar$mapFilter, m, f, _p8)
+			} : {
+				ctor: '::',
+				_0: _p7,
+				_1: A3(_user$project$Auxiliar$mapFilter, m, f, _p8)
+			};
+		}
+	});

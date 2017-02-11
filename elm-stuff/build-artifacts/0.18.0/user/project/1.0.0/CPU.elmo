@@ -1,0 +1,207 @@
+var _user$project$CPU$diff = F2(
+	function (_p1, _p0) {
+		var _p2 = _p1;
+		var _p3 = _p0;
+		return {ctor: '_Tuple2', _0: _p2._0 - _p3._0, _1: _p2._1 - _p3._1};
+	});
+var _user$project$CPU$op = function (_p4) {
+	var _p5 = _p4;
+	return {ctor: '_Tuple2', _0: 0 - _p5._0, _1: 0 - _p5._1};
+};
+var _user$project$CPU$sum = F2(
+	function (_p7, _p6) {
+		var _p8 = _p7;
+		var _p9 = _p6;
+		return {ctor: '_Tuple2', _0: _p8._0 + _p9._0, _1: _p8._1 + _p9._1};
+	});
+var _user$project$CPU$directions = {
+	ctor: '::',
+	_0: {ctor: '_Tuple2', _0: 0, _1: 1},
+	_1: {
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 0, _1: -1},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 1, _1: 0},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: -1, _1: 0},
+				_1: {ctor: '[]'}
+			}
+		}
+	}
+};
+var _user$project$CPU$validDirections = function (ld) {
+	return A2(
+		_elm_lang$core$List$filter,
+		function (x) {
+			return !_elm_lang$core$Native_Utils.eq(
+				_user$project$CPU$op(x),
+				ld);
+		},
+		_user$project$CPU$directions);
+};
+var _user$project$CPU$nextCoordinates = function (node) {
+	return A2(
+		_elm_lang$core$List$map,
+		function (x) {
+			return {
+				tile: A2(_user$project$CPU$sum, x, node.tile),
+				lastDir: x,
+				dir: node.dir
+			};
+		},
+		_user$project$CPU$validDirections(node.lastDir));
+};
+var _user$project$CPU$validNode = F3(
+	function (model, visited, bn) {
+		var mtile = A2(
+			_elm_lang$core$List$filter,
+			function (a) {
+				return _elm_lang$core$Native_Utils.eq(
+					_user$project$Model$getCoordinate(a),
+					bn.tile);
+			},
+			model.board);
+		var _p10 = mtile;
+		if ((_p10.ctor === '::') && (_p10._1.ctor === '[]')) {
+			var _p11 = _p10._0;
+			return (_elm_lang$core$Native_Utils.eq(_p11.elem, _user$project$Model$Empty) || _elm_lang$core$Native_Utils.eq(_p11.elem, _user$project$Model$Fruit)) && (!A2(_elm_lang$core$List$member, bn.tile, visited));
+		} else {
+			return false;
+		}
+	});
+var _user$project$CPU$startingNodes = F2(
+	function (m, p) {
+		var mh = _elm_lang$core$List$head(p.snake);
+		var _p12 = mh;
+		if (_p12.ctor === 'Nothing') {
+			return {ctor: '[]'};
+		} else {
+			return A2(
+				_elm_lang$core$List$filter,
+				A2(
+					_user$project$CPU$validNode,
+					m,
+					{ctor: '[]'}),
+				A2(
+					_elm_lang$core$List$map,
+					function (x) {
+						return {
+							tile: A2(_user$project$CPU$sum, x, _p12._0),
+							lastDir: x,
+							dir: x
+						};
+					},
+					_user$project$CPU$validDirections(p.dir)));
+		}
+	});
+var _user$project$CPU$bfsTransversal = F3(
+	function (model, visited, queue) {
+		bfsTransversal:
+		while (true) {
+			var _p13 = queue;
+			if (_p13.ctor === '::') {
+				if (_p13._1.ctor === '[]') {
+					var _p14 = _p13._0;
+					var nc = _user$project$CPU$nextCoordinates(_p14);
+					var validnc = A2(
+						_elm_lang$core$List$filter,
+						A2(_user$project$CPU$validNode, model, visited),
+						nc);
+					if (_elm_lang$core$Native_Utils.eq(model.fruit, _p14.tile) || _elm_lang$core$Native_Utils.eq(
+						_elm_lang$core$List$length(validnc),
+						0)) {
+						return _elm_lang$core$Maybe$Just(_p14.dir);
+					} else {
+						var _v8 = model,
+							_v9 = A2(
+							_elm_lang$core$Basics_ops['++'],
+							visited,
+							A2(
+								_elm_lang$core$List$map,
+								function (x) {
+									return x.tile;
+								},
+								validnc)),
+							_v10 = validnc;
+						model = _v8;
+						visited = _v9;
+						queue = _v10;
+						continue bfsTransversal;
+					}
+				} else {
+					var _p15 = _p13._0;
+					var nc = _user$project$CPU$nextCoordinates(_p15);
+					var validnc = A2(
+						_elm_lang$core$List$filter,
+						A2(_user$project$CPU$validNode, model, visited),
+						nc);
+					if (_elm_lang$core$Native_Utils.cmp(
+						_elm_lang$core$List$length(queue),
+						100) > -1) {
+						return _elm_lang$core$Maybe$Just(_p15.dir);
+					} else {
+						if (_elm_lang$core$Native_Utils.eq(model.fruit, _p15.tile)) {
+							return _elm_lang$core$Maybe$Just(_p15.dir);
+						} else {
+							var _v11 = model,
+								_v12 = A2(
+								_elm_lang$core$Basics_ops['++'],
+								visited,
+								A2(
+									_elm_lang$core$List$map,
+									function (x) {
+										return x.tile;
+									},
+									validnc)),
+								_v13 = A2(_elm_lang$core$Basics_ops['++'], _p13._1, validnc);
+							model = _v11;
+							visited = _v12;
+							queue = _v13;
+							continue bfsTransversal;
+						}
+					}
+				}
+			} else {
+				return _elm_lang$core$Maybe$Nothing;
+			}
+		}
+	});
+var _user$project$CPU$newCpuDirection = F2(
+	function (m, p) {
+		var initNodes = A2(_user$project$CPU$startingNodes, m, p);
+		var bfsAnswer = A3(
+			_user$project$CPU$bfsTransversal,
+			m,
+			A2(
+				_elm_lang$core$List$map,
+				function (x) {
+					return x.tile;
+				},
+				initNodes),
+			initNodes);
+		var _p16 = bfsAnswer;
+		if (_p16.ctor === 'Nothing') {
+			return p;
+		} else {
+			return A2(_user$project$Model$changePlayerDir, _p16._0, p);
+		}
+	});
+var _user$project$CPU$cpuAction = function (m) {
+	return _elm_lang$core$Native_Utils.update(
+		m,
+		{
+			players: A3(
+				_user$project$Auxiliar$mapFilter,
+				_user$project$CPU$newCpuDirection(m),
+				function (p) {
+					return _elm_lang$core$Native_Utils.eq(p.id, 2);
+				},
+				m.players)
+		});
+};
+var _user$project$CPU$BfsNode = F3(
+	function (a, b, c) {
+		return {tile: a, lastDir: b, dir: c};
+	});

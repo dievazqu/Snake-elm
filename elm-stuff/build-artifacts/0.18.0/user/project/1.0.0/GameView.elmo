@@ -1,0 +1,259 @@
+var _user$project$GameView$colorFromTile = function (tile) {
+	var _p0 = tile.elem;
+	_v0_8:
+	do {
+		switch (_p0.ctor) {
+			case 'Empty':
+				return 'lightgray';
+			case 'Wall':
+				return 'black';
+			case 'Fruit':
+				return 'darkgreen';
+			case 'PlayerHead':
+				switch (_p0._0) {
+					case 1:
+						return 'blue';
+					case 2:
+						return 'red';
+					default:
+						break _v0_8;
+				}
+			case 'PlayerTail':
+				switch (_p0._0) {
+					case 1:
+						return 'darkblue';
+					case 2:
+						return 'darkred';
+					default:
+						break _v0_8;
+				}
+			default:
+				return 'darkviolet';
+		}
+	} while(false);
+	return 'white';
+};
+var _user$project$GameView$centering = _elm_lang$html$Html_Attributes$style(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'position', _1: 'fixed'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'top', _1: '10%'},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: 'left', _1: '50%'},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '75px'},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'margin-left', _1: '-200px'},
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		}
+	});
+var _user$project$GameView$_p1 = {ctor: '_Tuple2', _0: 0, _1: 0};
+var _user$project$GameView$deltaTop = _user$project$GameView$_p1._0;
+var _user$project$GameView$deltaLeft = _user$project$GameView$_p1._1;
+var _user$project$GameView$_p2 = {ctor: '_Tuple2', _0: 10, _1: 10};
+var _user$project$GameView$width = _user$project$GameView$_p2._0;
+var _user$project$GameView$height = _user$project$GameView$_p2._1;
+var _user$project$GameView$styleTile = function (tile) {
+	return _elm_lang$html$Html_Attributes$style(
+		{
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple2',
+				_0: 'margin-top',
+				_1: A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(_user$project$GameView$width * tile.row),
+					'px')
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: 'margin-left',
+					_1: A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$core$Basics$toString(_user$project$GameView$height * tile.col),
+						'px')
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: 'background-color',
+						_1: _user$project$GameView$colorFromTile(tile)
+					},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'position', _1: 'absolute'},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'width', _1: '10px'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'height', _1: '10px'},
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		});
+};
+var _user$project$GameView$boardToDiv = function (list) {
+	return A2(
+		_elm_lang$core$List$map,
+		function (x) {
+			return A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _user$project$GameView$styleTile(x),
+					_1: {ctor: '[]'}
+				},
+				{ctor: '[]'});
+		},
+		list);
+};
+var _user$project$GameView$score = F2(
+	function (num, model) {
+		var p = A2(
+			_elm_lang$core$List$filter,
+			function (p) {
+				return _elm_lang$core$Native_Utils.eq(p.id, num);
+			},
+			model.players);
+		var _p3 = p;
+		if ((_p3.ctor === '::') && (_p3._1.ctor === '[]')) {
+			return _elm_lang$core$List$length(_p3._0.snake) - 4;
+		} else {
+			return 0;
+		}
+	});
+var _user$project$GameView$scoreboards = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'font-size', _1: '32px'},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '20px'},
+							_1: {ctor: '[]'}
+						}
+					}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'color', _1: 'darkblue'},
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'Player 1: ',
+							_elm_lang$core$Basics$toString(
+								A2(_user$project$GameView$score, 1, model)))),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$style(
+							{
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'color', _1: 'darkred'},
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'Player 2: ',
+								_elm_lang$core$Basics$toString(
+									A2(_user$project$GameView$score, 2, model)))),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$GameView$wrapperStyle = _elm_lang$html$Html_Attributes$style(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'background-color', _1: 'gray'},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: 'height', _1: '100%'},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'position', _1: 'fixed'},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'width', _1: '100%'},
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		}
+	});
+var _user$project$GameView$gameView = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _user$project$GameView$wrapperStyle,
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _user$project$GameView$scoreboards(model),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _user$project$GameView$centering,
+						_1: {ctor: '[]'}
+					},
+					_user$project$GameView$boardToDiv(model.board)),
+				_1: {ctor: '[]'}
+			}
+		});
+};
