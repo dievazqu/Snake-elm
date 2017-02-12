@@ -31,17 +31,18 @@ type State = Playing | Finished FinalState
 
 type FinalState = PlayerWin Int | Tie
 
-type alias Coordinate = (Int, Int)
-
 type alias Player = {
   id : Int,
   snake : List Coordinate,
   dir : Coordinate
 }
 
+type alias Coordinate = (Int, Int)
+
+type alias Tile = {row: Int, col: Int, elem: TileElement, visited : Bool}
 type TileElement = Empty | PlayerHead Int | PlayerTail Int |
    Fruit | Wall | Collision
-type alias Tile = {row: Int, col: Int, elem: TileElement, visited : Bool}
+
 
 getCoordinate : Tile -> Coordinate
 getCoordinate tile =
