@@ -5,23 +5,23 @@ import Auxiliar exposing (..)
 import Matrix exposing (..)
 
 cpuAction : GameModel -> GameModel
-cpuAction m =
-  { m | players = mapFilter (newCpuDirection m) (\p -> p.id == 2) m.players}
+cpuAction model =
+  { model | players = mapFilter (newCpuDirection model) (\p -> p.id == 2) model.players}
 
 clearMatrix : (Matrix Tile) -> Matrix Tile
-clearMatrix m =
-  Matrix.map (\x -> {x | visited = False}) m
+clearMatrix matrix =
+  Matrix.map (\x -> {x | visited = False}) matrix
 
 newCpuDirection : GameModel -> Player -> Player
-newCpuDirection m p =
+newCpuDirection model player =
   let
-    cleanedBoard = { m | board = (clearMatrix m.board)}
-    initNodes = startingNodes cleanedBoard p
+    cleanedBoard = { model | board = (clearMatrix model.board)}
+    initNodes = startingNodes cleanedBoard player
     bfsAnswer = bfsTransversal cleanedBoard initNodes
   in
     case bfsAnswer of
-      Nothing -> p
-      Just dir -> changePlayerDir dir p
+      Nothing -> player
+      Just dir -> changePlayerDir dir player
 
 type alias BfsNode =
   { tile : Coordinate,

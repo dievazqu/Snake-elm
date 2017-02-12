@@ -1,8 +1,0 @@
-var _user$project$View$view = function (model) {
-	var _p0 = model;
-	if (_p0.ctor === 'Menu') {
-		return _user$project$MenuView$menuView;
-	} else {
-		return _user$project$GameView$gameView(_p0._0);
-	}
-};

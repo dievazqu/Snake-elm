@@ -1,9 +1,0 @@
-var _user$project$Msg$GoToMenu = {ctor: 'GoToMenu'};
-var _user$project$Msg$StartingGameVsCPU = {ctor: 'StartingGameVsCPU'};
-var _user$project$Msg$StartingGameVsHuman = {ctor: 'StartingGameVsHuman'};
-var _user$project$Msg$KeyMsg = function (a) {
-	return {ctor: 'KeyMsg', _0: a};
-};
-var _user$project$Msg$Tick = function (a) {
-	return {ctor: 'Tick', _0: a};
-};

@@ -10121,7 +10121,7 @@ var _user$project$CPU$bfsTransversal = F2(
 			}
 		}
 	});
-var _user$project$CPU$clearMatrix = function (m) {
+var _user$project$CPU$clearMatrix = function (matrix) {
 	return A2(
 		_chendrix$elm_matrix$Matrix$map,
 		function (x) {
@@ -10129,35 +10129,35 @@ var _user$project$CPU$clearMatrix = function (m) {
 				x,
 				{visited: false});
 		},
-		m);
+		matrix);
 };
 var _user$project$CPU$newCpuDirection = F2(
-	function (m, p) {
+	function (model, player) {
 		var cleanedBoard = _elm_lang$core$Native_Utils.update(
-			m,
+			model,
 			{
-				board: _user$project$CPU$clearMatrix(m.board)
+				board: _user$project$CPU$clearMatrix(model.board)
 			});
-		var initNodes = A2(_user$project$CPU$startingNodes, cleanedBoard, p);
+		var initNodes = A2(_user$project$CPU$startingNodes, cleanedBoard, player);
 		var bfsAnswer = A2(_user$project$CPU$bfsTransversal, cleanedBoard, initNodes);
 		var _p12 = bfsAnswer;
 		if (_p12.ctor === 'Nothing') {
-			return p;
+			return player;
 		} else {
-			return A2(_user$project$Model$changePlayerDir, _p12._0, p);
+			return A2(_user$project$Model$changePlayerDir, _p12._0, player);
 		}
 	});
-var _user$project$CPU$cpuAction = function (m) {
+var _user$project$CPU$cpuAction = function (model) {
 	return _elm_lang$core$Native_Utils.update(
-		m,
+		model,
 		{
 			players: A3(
 				_user$project$Auxiliar$mapFilter,
-				_user$project$CPU$newCpuDirection(m),
+				_user$project$CPU$newCpuDirection(model),
 				function (p) {
 					return _elm_lang$core$Native_Utils.eq(p.id, 2);
 				},
-				m.players)
+				model.players)
 		});
 };
 var _user$project$CPU$BfsNode = F3(
