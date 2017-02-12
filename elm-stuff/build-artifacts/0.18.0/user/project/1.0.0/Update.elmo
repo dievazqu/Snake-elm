@@ -167,17 +167,26 @@ var _user$project$Update$update = F2(
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			}
 		} else {
-			var _p7 = A2(_user$project$Update$inGameAction, msg, _p4._0);
-			var ng = _p7._0;
-			var cmd = _p7._1;
-			return {
-				ctor: '_Tuple2',
-				_0: _user$project$Model$InGame(
-					A2(
-						_user$project$Update$vscpu,
-						ng,
-						_user$project$CPU$cpuAction(ng))),
-				_1: cmd
-			};
+			var _p7 = msg;
+			if (_p7.ctor === 'GoToMenu') {
+				return {
+					ctor: '_Tuple2',
+					_0: _user$project$Model$Menu(0),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			} else {
+				var _p8 = A2(_user$project$Update$inGameAction, msg, _p4._0);
+				var ng = _p8._0;
+				var cmd = _p8._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _user$project$Model$InGame(
+						A2(
+							_user$project$Update$vscpu,
+							ng,
+							_user$project$CPU$cpuAction(ng))),
+					_1: cmd
+				};
+			}
 		}
 	});

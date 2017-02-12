@@ -23,19 +23,6 @@ newCpuDirection m p =
       Nothing -> p
       Just dir -> changePlayerDir dir p
 
-{-  let
-    mh = List.head p.snake
-  in
-    case mh of
-      Nothing -> p
-      Just h ->
-        let bfsAnswer = bfsTransversal m [h]
-        in
-          case bfsAnswer of
-            Nothing -> p
-            Just dir -> changePlayerDir dir p
-            -}
-
 type alias BfsNode =
   { tile : Coordinate,
     lastDir : Coordinate,

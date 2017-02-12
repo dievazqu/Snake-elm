@@ -1,3 +1,4 @@
+var _user$project$Msg$GoToMenu = {ctor: 'GoToMenu'};
 var _user$project$Msg$Rules = {ctor: 'Rules'};
 var _user$project$Msg$StartingGameVsCPU = {ctor: 'StartingGameVsCPU'};
 var _user$project$Msg$StartingGameVsHuman = {ctor: 'StartingGameVsHuman'};
