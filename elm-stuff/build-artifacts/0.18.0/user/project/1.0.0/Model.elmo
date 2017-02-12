@@ -17,7 +17,7 @@ var _user$project$Model$changePlayerDir = F2(
 	function (d, p) {
 		return _elm_lang$core$Native_Utils.eq(
 			A2(
-				_user$project$Auxiliar$addC,
+				_user$project$Auxiliar$sum,
 				d,
 				_user$project$Model$getLastDir(p.snake)),
 			{ctor: '_Tuple2', _0: 0, _1: 0}) ? p : _elm_lang$core$Native_Utils.update(
@@ -46,7 +46,7 @@ var _user$project$Model$addFirst = F2(
 		} else {
 			return {
 				ctor: '::',
-				_0: A2(_user$project$Auxiliar$addC, _p2._0, dir),
+				_0: A2(_user$project$Auxiliar$sum, _p2._0, dir),
 				_1: l
 			};
 		}

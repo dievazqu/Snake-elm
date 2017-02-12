@@ -1,4 +1,4 @@
-module Auxiliar exposing (mapFilter, removeLast, addC, getFromList)
+module Auxiliar exposing (mapFilter, removeLast, sum, getFromList)
 
 mapFilter : (a -> a) -> ( a -> Bool) -> List a -> List a
 mapFilter m f l =
@@ -33,5 +33,5 @@ removeLast : List a -> List a
 removeLast l = List.take ((List.length l) - 1) l
 
 
-addC : (Int, Int) -> (Int, Int) -> (Int, Int)
-addC (x, y) (w, z) = (x+w, y+z)
+sum : (Int, Int) -> (Int, Int) -> (Int, Int)
+sum (x, y) (w, z) = (x+w, y+z)

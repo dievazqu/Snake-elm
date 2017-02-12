@@ -9500,7 +9500,7 @@ var _elm_lang$keyboard$Keyboard$subMap = F2(
 			});
 	});
 _elm_lang$core$Native_Platform.effectManagers['Keyboard'] = {pkg: 'elm-lang/keyboard', init: _elm_lang$keyboard$Keyboard$init, onEffects: _elm_lang$keyboard$Keyboard$onEffects, onSelfMsg: _elm_lang$keyboard$Keyboard$onSelfMsg, tag: 'sub', subMap: _elm_lang$keyboard$Keyboard$subMap};
-var _user$project$Auxiliar$addC = F2(
+var _user$project$Auxiliar$sum = F2(
 	function (_p1, _p0) {
 		var _p2 = _p1;
 		var _p3 = _p0;
@@ -9585,7 +9585,7 @@ var _user$project$Model$changePlayerDir = F2(
 	function (d, p) {
 		return _elm_lang$core$Native_Utils.eq(
 			A2(
-				_user$project$Auxiliar$addC,
+				_user$project$Auxiliar$sum,
 				d,
 				_user$project$Model$getLastDir(p.snake)),
 			{ctor: '_Tuple2', _0: 0, _1: 0}) ? p : _elm_lang$core$Native_Utils.update(
@@ -9614,7 +9614,7 @@ var _user$project$Model$addFirst = F2(
 		} else {
 			return {
 				ctor: '::',
-				_0: A2(_user$project$Auxiliar$addC, _p2._0, dir),
+				_0: A2(_user$project$Auxiliar$sum, _p2._0, dir),
 				_1: l
 			};
 		}
@@ -9980,12 +9980,6 @@ var _user$project$CPU$op = function (_p4) {
 	var _p5 = _p4;
 	return {ctor: '_Tuple2', _0: 0 - _p5._0, _1: 0 - _p5._1};
 };
-var _user$project$CPU$sum = F2(
-	function (_p7, _p6) {
-		var _p8 = _p7;
-		var _p9 = _p6;
-		return {ctor: '_Tuple2', _0: _p8._0 + _p9._0, _1: _p8._1 + _p9._1};
-	});
 var _user$project$CPU$directions = {
 	ctor: '::',
 	_0: {ctor: '_Tuple2', _0: 0, _1: 1},
@@ -10018,7 +10012,7 @@ var _user$project$CPU$nextCoordinates = function (node) {
 		_elm_lang$core$List$map,
 		function (x) {
 			return {
-				tile: A2(_user$project$CPU$sum, x, node.tile),
+				tile: A2(_user$project$Auxiliar$sum, x, node.tile),
 				lastDir: x,
 				dir: node.dir
 			};
@@ -10028,10 +10022,10 @@ var _user$project$CPU$nextCoordinates = function (node) {
 var _user$project$CPU$validNode = F2(
 	function (model, bn) {
 		var mtile = A2(_chendrix$elm_matrix$Matrix$get, bn.tile, model.board);
-		var _p10 = mtile;
-		if (_p10.ctor === 'Just') {
-			var _p11 = _p10._0;
-			return (_elm_lang$core$Native_Utils.eq(_p11.elem, _user$project$Model$Empty) || _elm_lang$core$Native_Utils.eq(_p11.elem, _user$project$Model$Fruit)) && (!_p11.visited);
+		var _p6 = mtile;
+		if (_p6.ctor === 'Just') {
+			var _p7 = _p6._0;
+			return (_elm_lang$core$Native_Utils.eq(_p7.elem, _user$project$Model$Empty) || _elm_lang$core$Native_Utils.eq(_p7.elem, _user$project$Model$Fruit)) && (!_p7.visited);
 		} else {
 			return false;
 		}
@@ -10039,8 +10033,8 @@ var _user$project$CPU$validNode = F2(
 var _user$project$CPU$startingNodes = F2(
 	function (m, p) {
 		var mh = _elm_lang$core$List$head(p.snake);
-		var _p12 = mh;
-		if (_p12.ctor === 'Nothing') {
+		var _p8 = mh;
+		if (_p8.ctor === 'Nothing') {
 			return {ctor: '[]'};
 		} else {
 			return A2(
@@ -10050,7 +10044,7 @@ var _user$project$CPU$startingNodes = F2(
 					_elm_lang$core$List$map,
 					function (x) {
 						return {
-							tile: A2(_user$project$CPU$sum, x, _p12._0),
+							tile: A2(_user$project$Auxiliar$sum, x, _p8._0),
 							lastDir: x,
 							dir: x
 						};
@@ -10085,40 +10079,40 @@ var _user$project$CPU$bfsTransversal = F2(
 	function (model, queue) {
 		bfsTransversal:
 		while (true) {
-			var _p13 = queue;
-			if (_p13.ctor === '::') {
-				if (_p13._1.ctor === '[]') {
-					var _p14 = _p13._0;
-					var nc = _user$project$CPU$nextCoordinates(_p14);
+			var _p9 = queue;
+			if (_p9.ctor === '::') {
+				if (_p9._1.ctor === '[]') {
+					var _p10 = _p9._0;
+					var nc = _user$project$CPU$nextCoordinates(_p10);
 					var validnc = A2(
 						_elm_lang$core$List$filter,
 						_user$project$CPU$validNode(model),
 						nc);
-					if (_elm_lang$core$Native_Utils.eq(model.fruit, _p14.tile) || _elm_lang$core$Native_Utils.eq(
+					if (_elm_lang$core$Native_Utils.eq(model.fruit, _p10.tile) || _elm_lang$core$Native_Utils.eq(
 						_elm_lang$core$List$length(validnc),
 						0)) {
-						return _elm_lang$core$Maybe$Just(_p14.dir);
+						return _elm_lang$core$Maybe$Just(_p10.dir);
 					} else {
-						var _v8 = A2(_user$project$CPU$visite, model, validnc),
-							_v9 = validnc;
-						model = _v8;
-						queue = _v9;
+						var _v6 = A2(_user$project$CPU$visite, model, validnc),
+							_v7 = validnc;
+						model = _v6;
+						queue = _v7;
 						continue bfsTransversal;
 					}
 				} else {
-					var _p15 = _p13._0;
-					var nc = _user$project$CPU$nextCoordinates(_p15);
+					var _p11 = _p9._0;
+					var nc = _user$project$CPU$nextCoordinates(_p11);
 					var validnc = A2(
 						_elm_lang$core$List$filter,
 						_user$project$CPU$validNode(model),
 						nc);
-					if (_elm_lang$core$Native_Utils.eq(model.fruit, _p15.tile)) {
-						return _elm_lang$core$Maybe$Just(_p15.dir);
+					if (_elm_lang$core$Native_Utils.eq(model.fruit, _p11.tile)) {
+						return _elm_lang$core$Maybe$Just(_p11.dir);
 					} else {
-						var _v10 = A2(_user$project$CPU$visite, model, validnc),
-							_v11 = A2(_elm_lang$core$Basics_ops['++'], _p13._1, validnc);
-						model = _v10;
-						queue = _v11;
+						var _v8 = A2(_user$project$CPU$visite, model, validnc),
+							_v9 = A2(_elm_lang$core$Basics_ops['++'], _p9._1, validnc);
+						model = _v8;
+						queue = _v9;
 						continue bfsTransversal;
 					}
 				}
@@ -10146,11 +10140,11 @@ var _user$project$CPU$newCpuDirection = F2(
 			});
 		var initNodes = A2(_user$project$CPU$startingNodes, cleanedBoard, p);
 		var bfsAnswer = A2(_user$project$CPU$bfsTransversal, cleanedBoard, initNodes);
-		var _p16 = bfsAnswer;
-		if (_p16.ctor === 'Nothing') {
+		var _p12 = bfsAnswer;
+		if (_p12.ctor === 'Nothing') {
 			return p;
 		} else {
-			return A2(_user$project$Model$changePlayerDir, _p16._0, p);
+			return A2(_user$project$Model$changePlayerDir, _p12._0, p);
 		}
 	});
 var _user$project$CPU$cpuAction = function (m) {
@@ -10171,7 +10165,6 @@ var _user$project$CPU$BfsNode = F3(
 		return {tile: a, lastDir: b, dir: c};
 	});
 var _user$project$Msg$GoToMenu = {ctor: 'GoToMenu'};
-var _user$project$Msg$Rules = {ctor: 'Rules'};
 var _user$project$Msg$StartingGameVsCPU = {ctor: 'StartingGameVsCPU'};
 var _user$project$Msg$StartingGameVsHuman = {ctor: 'StartingGameVsHuman'};
 var _user$project$Msg$KeyMsg = function (a) {

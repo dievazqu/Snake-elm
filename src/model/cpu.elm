@@ -29,7 +29,7 @@ type alias BfsNode =
     dir : Coordinate}
 
 
--- Agrego a la queue solo los validos --
+
 bfsTransversal : GameModel -> (List BfsNode) -> Maybe Coordinate
 bfsTransversal model queue =
   case queue of
@@ -98,6 +98,5 @@ validDirections : Coordinate -> List Coordinate
 validDirections ld = (List.filter (\x -> not (op x == ld)) directions)
 
 directions = [(0,1),(0,-1),(1,0),(-1,0)]
-sum (x, y) (w, z) = (x+w, y+z)
 op (x, y) = (-x, -y)
 diff (x, y) (w, z) = (x-w, y-z)

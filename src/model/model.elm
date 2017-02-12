@@ -220,7 +220,7 @@ addFirst : Coordinate -> (List Coordinate) -> List Coordinate
 addFirst dir l =
   case List.head l of
     Nothing -> l
-    Just c -> (addC c dir)::l
+    Just c -> (sum c dir)::l
 
 changeDir : GameModel -> Int -> Coordinate -> GameModel
 changeDir model n d =
@@ -228,7 +228,7 @@ changeDir model n d =
 
 changePlayerDir : Coordinate -> Player -> Player
 changePlayerDir d p =
-  if addC d (getLastDir p.snake) == (0, 0) then
+  if sum d (getLastDir p.snake) == (0, 0) then
     p
   else
     { p | dir = d}

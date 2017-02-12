@@ -1,4 +1,4 @@
-var _user$project$Auxiliar$addC = F2(
+var _user$project$Auxiliar$sum = F2(
 	function (_p1, _p0) {
 		var _p2 = _p1;
 		var _p3 = _p0;
