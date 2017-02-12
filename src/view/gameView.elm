@@ -2,15 +2,17 @@ module GameView exposing (gameView)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Msg exposing (Msg)
+import Msg exposing (..)
 import Model exposing (..)
 import Matrix exposing (..)
+import Html.Events exposing (onClick)
 
 gameView : GameModel -> Html Msg
 gameView model =
   div [ wrapperStyle] [
     (scoreboards model),
-    div [ centering ] (boardToDiv (Matrix.flatten model.board))
+    div [ centering ] (boardToDiv (Matrix.flatten model.board)),
+    div [] [button [onClick GoToMenu,  style [("font-size", "16px"), ("margin-top", "440px")] ] [text "GO TO MENU"]]
     ]
 
 wrapperStyle : Html.Attribute Msg
@@ -24,10 +26,23 @@ wrapperStyle =
 
 scoreboards : GameModel -> Html Msg
 scoreboards model =
-  div [ style [("text-align", "center"), ("font-size", "32px"), ("margin-top", "20px")]] [
-    div [ style [("color", "darkblue")]] [text ("Player 1: "++(toString (score 1 model)))],
-    div [ style [("color",  "darkred")]] [text ("Player 2: "++(toString (score 2 model)))]
-  ]
+  case model.state of
+    Playing ->
+      div [ style [("text-align", "center"), ("font-size", "32px"), ("margin-top", "20px"), ("height", "80px")]] [
+        div [ style [("color", "darkblue")]] [text ("Player 1: "++(toString (score 1 model)))],
+        div [ style [("color",  "darkred")]] [text ("Player 2: "++(toString (score 2 model)))]
+        ]
+    Finished fs ->
+      case fs of
+        Tie -> div
+          [style [("text-align", "center"), ("font-size", "48px"),
+          ("margin-top", "20px"), ("color", "Black"), ("height", "80px")]]
+          [text ("Game Finished: Tie")]
+        PlayerWin p -> div
+          [style [("text-align", "center"), ("font-size", "48px"),
+           ("margin-top", "20px"), ("color", "Black"), ("height", "80px")]]
+          [text ("Game Finished: Player "++(toString p)++" wins")]
+
 
 score : Int -> GameModel -> Int
 score num model =
@@ -50,9 +65,8 @@ boardToDiv list = List.map (\x -> div [styleTile x] []) list
 centering : Attribute Msg
 centering = style
   [("position", "fixed"),
-   ("top", "10%"),
    ("left", "50%"),
-   ("margin-top", "75px"),
+   ("margin-top", "10px"),
    ("margin-left", "-200px")]
 
 styleTile : Tile -> Attribute Msg

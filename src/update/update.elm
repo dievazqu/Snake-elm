@@ -13,10 +13,13 @@ update msg model =
        Tick newTime -> (Menu (round newTime), Cmd.none)
        _ -> (model, Cmd.none)
     InGame g ->
-      let
-        (ng, cmd) = inGameAction msg g
-      in
-        (InGame (vscpu ng (cpuAction ng)), cmd)
+        case msg of
+          GoToMenu -> (Menu 0, Cmd.none)
+          _ ->
+            let
+              (ng, cmd) = inGameAction msg g
+            in
+              (InGame (vscpu ng (cpuAction ng)), cmd)
 
 vshuman : GameModel -> GameModel -> GameModel
 vshuman g m =

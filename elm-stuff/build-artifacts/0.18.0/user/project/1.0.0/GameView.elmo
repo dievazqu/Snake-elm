@@ -39,18 +39,14 @@ var _user$project$GameView$centering = _elm_lang$html$Html_Attributes$style(
 		_0: {ctor: '_Tuple2', _0: 'position', _1: 'fixed'},
 		_1: {
 			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 'top', _1: '10%'},
+			_0: {ctor: '_Tuple2', _0: 'left', _1: '50%'},
 			_1: {
 				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 'left', _1: '50%'},
+				_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '10px'},
 				_1: {
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '75px'},
-					_1: {
-						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'margin-left', _1: '-200px'},
-						_1: {ctor: '[]'}
-					}
+					_0: {ctor: '_Tuple2', _0: 'margin-left', _1: '-200px'},
+					_1: {ctor: '[]'}
 				}
 			}
 		}
@@ -138,51 +134,33 @@ var _user$project$GameView$score = F2(
 		}
 	});
 var _user$project$GameView$scoreboards = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$style(
-				{
-					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
-					_1: {
+	var _p4 = model.state;
+	if (_p4.ctor === 'Playing') {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
 						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'font-size', _1: '32px'},
+						_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
 						_1: {
 							ctor: '::',
-							_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '20px'},
-							_1: {ctor: '[]'}
+							_0: {ctor: '_Tuple2', _0: 'font-size', _1: '32px'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '20px'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'height', _1: '80px'},
+									_1: {ctor: '[]'}
+								}
+							}
 						}
-					}
-				}),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$div,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$style(
-						{
-							ctor: '::',
-							_0: {ctor: '_Tuple2', _0: 'color', _1: 'darkblue'},
-							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text(
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							'Player 1: ',
-							_elm_lang$core$Basics$toString(
-								A2(_user$project$GameView$score, 1, model)))),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
+					}),
+				_1: {ctor: '[]'}
+			},
+			{
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$div,
@@ -191,7 +169,7 @@ var _user$project$GameView$scoreboards = function (model) {
 						_0: _elm_lang$html$Html_Attributes$style(
 							{
 								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: 'color', _1: 'darkred'},
+								_0: {ctor: '_Tuple2', _0: 'color', _1: 'darkblue'},
 								_1: {ctor: '[]'}
 							}),
 						_1: {ctor: '[]'}
@@ -201,14 +179,117 @@ var _user$project$GameView$scoreboards = function (model) {
 						_0: _elm_lang$html$Html$text(
 							A2(
 								_elm_lang$core$Basics_ops['++'],
-								'Player 2: ',
+								'Player 1: ',
 								_elm_lang$core$Basics$toString(
-									A2(_user$project$GameView$score, 2, model)))),
+									A2(_user$project$GameView$score, 1, model)))),
 						_1: {ctor: '[]'}
 					}),
-				_1: {ctor: '[]'}
-			}
-		});
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'color', _1: 'darkred'},
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'Player 2: ',
+									_elm_lang$core$Basics$toString(
+										A2(_user$project$GameView$score, 2, model)))),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	} else {
+		var _p5 = _p4._0;
+		if (_p5.ctor === 'Tie') {
+			return A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'font-size', _1: '48px'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '20px'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'color', _1: 'Black'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'height', _1: '80px'},
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Game Finished: Tie'),
+					_1: {ctor: '[]'}
+				});
+		} else {
+			return A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'font-size', _1: '48px'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '20px'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'color', _1: 'Black'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'height', _1: '80px'},
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'Game Finished: Player ',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(_p5._0),
+								' wins'))),
+					_1: {ctor: '[]'}
+				});
+		}
+	}
 };
 var _user$project$GameView$wrapperStyle = _elm_lang$html$Html_Attributes$style(
 	{
@@ -254,7 +335,42 @@ var _user$project$GameView$gameView = function (model) {
 					},
 					_user$project$GameView$boardToDiv(
 						_chendrix$elm_matrix$Matrix$flatten(model.board))),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(_user$project$Msg$GoToMenu),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$style(
+											{
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'font-size', _1: '16px'},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '440px'},
+													_1: {ctor: '[]'}
+												}
+											}),
+										_1: {ctor: '[]'}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('GO TO MENU'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };

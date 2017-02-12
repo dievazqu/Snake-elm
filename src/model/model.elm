@@ -5,6 +5,8 @@ import Random
 import Time
 import Matrix exposing (..)
 
+type Model = Menu Int | InGame GameModel
+
 (rows, cols) = (40, 40)
 winningPoints = 10
 
@@ -15,19 +17,19 @@ startingPos n =
     2 -> [(21, 30), (20, 30), (19, 30), (18, 30)]
     _ -> []
 
-type Model = Menu Int | InGame GameModel
-
 type alias GameModel =
   {
     board: Matrix Tile,
-    players: List(Player),
+    players: List Player,
     fruit: Coordinate,
     seed : Random.Seed,
     state : State,
     cpu: Bool
   }
 
-type State = Playing | Finished
+type State = Playing | Finished FinalState
+
+type FinalState = PlayerWin Int | Tie
 
 type alias Coordinate = (Int, Int)
 
@@ -108,6 +110,22 @@ randomCoordinate : Random.Generator Coordinate
 randomCoordinate =
     Random.pair (Random.int 1 (rows-2)) (Random.int 1 (cols-2))
 
+isPlayerAlive : GameModel -> Player -> Bool
+isPlayerAlive model p =
+  let
+    mh = List.head p.snake
+  in
+    case mh of
+      Nothing -> False
+      Just h ->
+        let
+          mtile = Matrix.get h model.board
+        in
+          case mtile of
+            Nothing -> False
+            Just tile -> not (tile.elem == Collision)
+
+
 makeMove : GameModel -> GameModel
 makeMove model =
   let
@@ -115,9 +133,48 @@ makeMove model =
   in
     if List.any (\t -> t.elem == Collision) (Matrix.flatten modelAfterMove.board)
       || (List.any (\t -> List.length t.snake >= winningPoints+4) model.players) then
-      { modelAfterMove | state = Finished}
+      { modelAfterMove | state = (gameState modelAfterMove)}
     else
       modelAfterMove
+
+gameState : GameModel -> State
+gameState model =
+  let
+    playersAlive = List.filter (isPlayerAlive model) model.players
+    currentWinningPlayers = playerWithMaxPoints model
+  in
+    case playersAlive of
+      [x] -> Finished (PlayerWin x.id)
+      [] ->
+        case currentWinningPlayers of
+          [y] -> Finished (PlayerWin y.id)
+          _ -> Finished Tie
+      (x::xs) ->
+        case currentWinningPlayers of
+          [y] -> if List.length y.snake > winningPoints + 3 then
+              Finished (PlayerWin y.id)
+            else
+              Playing
+          _ -> Playing
+
+playerWithMaxPoints : GameModel -> List Player
+playerWithMaxPoints model =
+  List.foldr (\p cp ->
+    case cp of
+      (x::xs) ->
+        let
+          ppoints = List.length p.snake
+          xpoints = List.length x.snake
+        in
+          if ppoints > xpoints then
+            [p]
+          else
+            if ppoints == xpoints then
+              p::x::xs
+            else
+              x::xs
+      [] -> [p]
+    ) [] model.players
 
 checkFruit : GameModel -> GameModel
 checkFruit model =

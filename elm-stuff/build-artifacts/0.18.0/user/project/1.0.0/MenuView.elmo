@@ -1,0 +1,124 @@
+var _user$project$MenuView$buttonsStyle = _elm_lang$html$Html_Attributes$style(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '24px'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'width', _1: '140px'},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: 'height', _1: '60px'},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'font-size', _1: '24px'},
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	});
+var _user$project$MenuView$wrapperStyle = _elm_lang$html$Html_Attributes$style(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'background-color', _1: 'gray'},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: 'height', _1: '100%'},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'position', _1: 'fixed'},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'width', _1: '100%'},
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		}
+	});
+var _user$project$MenuView$menuView = A2(
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: _user$project$MenuView$wrapperStyle,
+		_1: {ctor: '[]'}
+	},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '24px'},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'font-size', _1: '140px'},
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('Snake'),
+				_1: {ctor: '[]'}
+			}),
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(_user$project$Msg$StartingGameVsHuman),
+							_1: {
+								ctor: '::',
+								_0: _user$project$MenuView$buttonsStyle,
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('2 PLAYERS'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$button,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(_user$project$Msg$StartingGameVsCPU),
+								_1: {
+									ctor: '::',
+									_0: _user$project$MenuView$buttonsStyle,
+									_1: {ctor: '[]'}
+								}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('VS CPU'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		}
+	});

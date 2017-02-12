@@ -9646,6 +9646,37 @@ var _user$project$Model$movePlayers = function (model) {
 				model.players)
 		});
 };
+var _user$project$Model$playerWithMaxPoints = function (model) {
+	return A3(
+		_elm_lang$core$List$foldr,
+		F2(
+			function (p, cp) {
+				var _p4 = cp;
+				if (_p4.ctor === '::') {
+					var _p6 = _p4._1;
+					var _p5 = _p4._0;
+					var xpoints = _elm_lang$core$List$length(_p5.snake);
+					var ppoints = _elm_lang$core$List$length(p.snake);
+					return (_elm_lang$core$Native_Utils.cmp(ppoints, xpoints) > 0) ? {
+						ctor: '::',
+						_0: p,
+						_1: {ctor: '[]'}
+					} : (_elm_lang$core$Native_Utils.eq(ppoints, xpoints) ? {
+						ctor: '::',
+						_0: p,
+						_1: {ctor: '::', _0: _p5, _1: _p6}
+					} : {ctor: '::', _0: _p5, _1: _p6});
+				} else {
+					return {
+						ctor: '::',
+						_0: p,
+						_1: {ctor: '[]'}
+					};
+				}
+			}),
+		{ctor: '[]'},
+		model.players);
+};
 var _user$project$Model$getCoordinate = function (tile) {
 	return {ctor: '_Tuple2', _0: tile.row, _1: tile.col};
 };
@@ -9656,8 +9687,8 @@ var _user$project$Model$fruitTile = F2(
 			model.fruit);
 	});
 var _user$project$Model$startingPos = function (n) {
-	var _p4 = n;
-	switch (_p4) {
+	var _p7 = n;
+	switch (_p7) {
 		case 1:
 			return {
 				ctor: '::',
@@ -9699,9 +9730,9 @@ var _user$project$Model$startingPos = function (n) {
 	}
 };
 var _user$project$Model$winningPoints = 10;
-var _user$project$Model$_p5 = {ctor: '_Tuple2', _0: 40, _1: 40};
-var _user$project$Model$rows = _user$project$Model$_p5._0;
-var _user$project$Model$cols = _user$project$Model$_p5._1;
+var _user$project$Model$_p8 = {ctor: '_Tuple2', _0: 40, _1: 40};
+var _user$project$Model$rows = _user$project$Model$_p8._0;
+var _user$project$Model$cols = _user$project$Model$_p8._1;
 var _user$project$Model$borderTile = function (t) {
 	return _elm_lang$core$Native_Utils.eq(t.col, 0) || (_elm_lang$core$Native_Utils.eq(t.col, _user$project$Model$cols - 1) || (_elm_lang$core$Native_Utils.eq(t.row, 0) || _elm_lang$core$Native_Utils.eq(t.row, _user$project$Model$rows - 1)));
 };
@@ -9712,9 +9743,9 @@ var _user$project$Model$randomCoordinate = A2(
 var _user$project$Model$newFruitPosition = function (model) {
 	newFruitPosition:
 	while (true) {
-		var _p6 = A2(_elm_lang$core$Random$step, _user$project$Model$randomCoordinate, model.seed);
-		var rc = _p6._0;
-		var newSeed = _p6._1;
+		var _p9 = A2(_elm_lang$core$Random$step, _user$project$Model$randomCoordinate, model.seed);
+		var rc = _p9._0;
+		var newSeed = _p9._1;
 		var b = A2(
 			_elm_lang$core$List$any,
 			function (p) {
@@ -9722,10 +9753,10 @@ var _user$project$Model$newFruitPosition = function (model) {
 			},
 			model.players);
 		if (b) {
-			var _v5 = _elm_lang$core$Native_Utils.update(
+			var _v6 = _elm_lang$core$Native_Utils.update(
 				model,
 				{seed: newSeed});
-			model = _v5;
+			model = _v6;
 			continue newFruitPosition;
 		} else {
 			return _elm_lang$core$Native_Utils.update(
@@ -9761,9 +9792,64 @@ var _user$project$Model$InGame = function (a) {
 var _user$project$Model$Menu = function (a) {
 	return {ctor: 'Menu', _0: a};
 };
-var _user$project$Model$Finished = {ctor: 'Finished'};
+var _user$project$Model$Finished = function (a) {
+	return {ctor: 'Finished', _0: a};
+};
 var _user$project$Model$Playing = {ctor: 'Playing'};
+var _user$project$Model$Tie = {ctor: 'Tie'};
+var _user$project$Model$PlayerWin = function (a) {
+	return {ctor: 'PlayerWin', _0: a};
+};
 var _user$project$Model$Collision = {ctor: 'Collision'};
+var _user$project$Model$isPlayerAlive = F2(
+	function (model, p) {
+		var mh = _elm_lang$core$List$head(p.snake);
+		var _p10 = mh;
+		if (_p10.ctor === 'Nothing') {
+			return false;
+		} else {
+			var mtile = A2(_chendrix$elm_matrix$Matrix$get, _p10._0, model.board);
+			var _p11 = mtile;
+			if (_p11.ctor === 'Nothing') {
+				return false;
+			} else {
+				return !_elm_lang$core$Native_Utils.eq(_p11._0.elem, _user$project$Model$Collision);
+			}
+		}
+	});
+var _user$project$Model$gameState = function (model) {
+	var currentWinningPlayers = _user$project$Model$playerWithMaxPoints(model);
+	var playersAlive = A2(
+		_elm_lang$core$List$filter,
+		_user$project$Model$isPlayerAlive(model),
+		model.players);
+	var _p12 = playersAlive;
+	if (_p12.ctor === '[]') {
+		var _p13 = currentWinningPlayers;
+		if ((_p13.ctor === '::') && (_p13._1.ctor === '[]')) {
+			return _user$project$Model$Finished(
+				_user$project$Model$PlayerWin(_p13._0.id));
+		} else {
+			return _user$project$Model$Finished(_user$project$Model$Tie);
+		}
+	} else {
+		if (_p12._1.ctor === '[]') {
+			return _user$project$Model$Finished(
+				_user$project$Model$PlayerWin(_p12._0.id));
+		} else {
+			var _p14 = currentWinningPlayers;
+			if ((_p14.ctor === '::') && (_p14._1.ctor === '[]')) {
+				var _p15 = _p14._0;
+				return (_elm_lang$core$Native_Utils.cmp(
+					_elm_lang$core$List$length(_p15.snake),
+					_user$project$Model$winningPoints + 3) > 0) ? _user$project$Model$Finished(
+					_user$project$Model$PlayerWin(_p15.id)) : _user$project$Model$Playing;
+			} else {
+				return _user$project$Model$Playing;
+			}
+		}
+	}
+};
 var _user$project$Model$Wall = {ctor: 'Wall'};
 var _user$project$Model$Fruit = {ctor: 'Fruit'};
 var _user$project$Model$PlayerTail = function (a) {
@@ -9782,26 +9868,26 @@ var _user$project$Model$elemInTile = F2(
 				return A2(_elm_lang$core$List$member, coor, p.snake);
 			},
 			model.players);
-		var _p7 = p;
-		if (_p7.ctor === '::') {
-			if (_p7._1.ctor === '[]') {
-				var _p9 = _p7._0;
-				var mTail = _elm_lang$core$List$tail(_p9.snake);
+		var _p16 = p;
+		if (_p16.ctor === '::') {
+			if (_p16._1.ctor === '[]') {
+				var _p18 = _p16._0;
+				var mTail = _elm_lang$core$List$tail(_p18.snake);
 				if (_elm_lang$core$Native_Utils.eq(
 					_elm_lang$core$Maybe$Just(coor),
-					_elm_lang$core$List$head(_p9.snake))) {
+					_elm_lang$core$List$head(_p18.snake))) {
 					if (_user$project$Model$borderTile(tile)) {
 						return _user$project$Model$Collision;
 					} else {
-						var _p8 = mTail;
-						if (_p8.ctor === 'Nothing') {
+						var _p17 = mTail;
+						if (_p17.ctor === 'Nothing') {
 							return _user$project$Model$Collision;
 						} else {
-							return A2(_elm_lang$core$List$member, coor, _p8._0) ? _user$project$Model$Collision : _user$project$Model$PlayerHead(_p9.id);
+							return A2(_elm_lang$core$List$member, coor, _p17._0) ? _user$project$Model$Collision : _user$project$Model$PlayerHead(_p18.id);
 						}
 					}
 				} else {
-					return _user$project$Model$PlayerTail(_p9.id);
+					return _user$project$Model$PlayerTail(_p18.id);
 				}
 			} else {
 				return _user$project$Model$Collision;
@@ -9844,15 +9930,17 @@ var _user$project$Model$makeMove = function (model) {
 		},
 		model.players)) ? _elm_lang$core$Native_Utils.update(
 		modelAfterMove,
-		{state: _user$project$Model$Finished}) : modelAfterMove;
+		{
+			state: _user$project$Model$gameState(modelAfterMove)
+		}) : modelAfterMove;
 };
 var _user$project$Model$initBoard = A3(
 	_chendrix$elm_matrix$Matrix$matrix,
 	_user$project$Model$rows,
 	_user$project$Model$cols,
-	function (_p10) {
-		var _p11 = _p10;
-		return {row: _p11._0, col: _p11._1, elem: _user$project$Model$Empty, visited: false};
+	function (_p19) {
+		var _p20 = _p19;
+		return {row: _p20._0, col: _p20._1, elem: _user$project$Model$Empty, visited: false};
 	});
 var _user$project$Model$initState = F2(
 	function (s, b) {
@@ -10082,6 +10170,7 @@ var _user$project$CPU$BfsNode = F3(
 	function (a, b, c) {
 		return {tile: a, lastDir: b, dir: c};
 	});
+var _user$project$Msg$GoToMenu = {ctor: 'GoToMenu'};
 var _user$project$Msg$Rules = {ctor: 'Rules'};
 var _user$project$Msg$StartingGameVsCPU = {ctor: 'StartingGameVsCPU'};
 var _user$project$Msg$StartingGameVsHuman = {ctor: 'StartingGameVsHuman'};
@@ -10132,18 +10221,14 @@ var _user$project$GameView$centering = _elm_lang$html$Html_Attributes$style(
 		_0: {ctor: '_Tuple2', _0: 'position', _1: 'fixed'},
 		_1: {
 			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 'top', _1: '10%'},
+			_0: {ctor: '_Tuple2', _0: 'left', _1: '50%'},
 			_1: {
 				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 'left', _1: '50%'},
+				_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '10px'},
 				_1: {
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '75px'},
-					_1: {
-						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'margin-left', _1: '-200px'},
-						_1: {ctor: '[]'}
-					}
+					_0: {ctor: '_Tuple2', _0: 'margin-left', _1: '-200px'},
+					_1: {ctor: '[]'}
 				}
 			}
 		}
@@ -10231,51 +10316,33 @@ var _user$project$GameView$score = F2(
 		}
 	});
 var _user$project$GameView$scoreboards = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$style(
-				{
-					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
-					_1: {
+	var _p4 = model.state;
+	if (_p4.ctor === 'Playing') {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
 						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'font-size', _1: '32px'},
+						_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
 						_1: {
 							ctor: '::',
-							_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '20px'},
-							_1: {ctor: '[]'}
+							_0: {ctor: '_Tuple2', _0: 'font-size', _1: '32px'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '20px'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'height', _1: '80px'},
+									_1: {ctor: '[]'}
+								}
+							}
 						}
-					}
-				}),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$div,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$style(
-						{
-							ctor: '::',
-							_0: {ctor: '_Tuple2', _0: 'color', _1: 'darkblue'},
-							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text(
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							'Player 1: ',
-							_elm_lang$core$Basics$toString(
-								A2(_user$project$GameView$score, 1, model)))),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
+					}),
+				_1: {ctor: '[]'}
+			},
+			{
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$div,
@@ -10284,7 +10351,7 @@ var _user$project$GameView$scoreboards = function (model) {
 						_0: _elm_lang$html$Html_Attributes$style(
 							{
 								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: 'color', _1: 'darkred'},
+								_0: {ctor: '_Tuple2', _0: 'color', _1: 'darkblue'},
 								_1: {ctor: '[]'}
 							}),
 						_1: {ctor: '[]'}
@@ -10294,14 +10361,117 @@ var _user$project$GameView$scoreboards = function (model) {
 						_0: _elm_lang$html$Html$text(
 							A2(
 								_elm_lang$core$Basics_ops['++'],
-								'Player 2: ',
+								'Player 1: ',
 								_elm_lang$core$Basics$toString(
-									A2(_user$project$GameView$score, 2, model)))),
+									A2(_user$project$GameView$score, 1, model)))),
 						_1: {ctor: '[]'}
 					}),
-				_1: {ctor: '[]'}
-			}
-		});
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'color', _1: 'darkred'},
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'Player 2: ',
+									_elm_lang$core$Basics$toString(
+										A2(_user$project$GameView$score, 2, model)))),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	} else {
+		var _p5 = _p4._0;
+		if (_p5.ctor === 'Tie') {
+			return A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'font-size', _1: '48px'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '20px'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'color', _1: 'Black'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'height', _1: '80px'},
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Game Finished: Tie'),
+					_1: {ctor: '[]'}
+				});
+		} else {
+			return A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'font-size', _1: '48px'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '20px'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'color', _1: 'Black'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'height', _1: '80px'},
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'Game Finished: Player ',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(_p5._0),
+								' wins'))),
+					_1: {ctor: '[]'}
+				});
+		}
+	}
 };
 var _user$project$GameView$wrapperStyle = _elm_lang$html$Html_Attributes$style(
 	{
@@ -10347,11 +10517,46 @@ var _user$project$GameView$gameView = function (model) {
 					},
 					_user$project$GameView$boardToDiv(
 						_chendrix$elm_matrix$Matrix$flatten(model.board))),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(_user$project$Msg$GoToMenu),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$style(
+											{
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'font-size', _1: '16px'},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '440px'},
+													_1: {ctor: '[]'}
+												}
+											}),
+										_1: {ctor: '[]'}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('GO TO MENU'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };
-var _user$project$View$buttonsStyle = _elm_lang$html$Html_Attributes$style(
+var _user$project$MenuView$buttonsStyle = _elm_lang$html$Html_Attributes$style(
 	{
 		ctor: '::',
 		_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '24px'},
@@ -10369,7 +10574,7 @@ var _user$project$View$buttonsStyle = _elm_lang$html$Html_Attributes$style(
 			}
 		}
 	});
-var _user$project$View$wrapperStyle = _elm_lang$html$Html_Attributes$style(
+var _user$project$MenuView$wrapperStyle = _elm_lang$html$Html_Attributes$style(
 	{
 		ctor: '::',
 		_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
@@ -10391,11 +10596,11 @@ var _user$project$View$wrapperStyle = _elm_lang$html$Html_Attributes$style(
 			}
 		}
 	});
-var _user$project$View$menuView = A2(
+var _user$project$MenuView$menuView = A2(
 	_elm_lang$html$Html$div,
 	{
 		ctor: '::',
-		_0: _user$project$View$wrapperStyle,
+		_0: _user$project$MenuView$wrapperStyle,
 		_1: {ctor: '[]'}
 	},
 	{
@@ -10435,7 +10640,7 @@ var _user$project$View$menuView = A2(
 							_0: _elm_lang$html$Html_Events$onClick(_user$project$Msg$StartingGameVsHuman),
 							_1: {
 								ctor: '::',
-								_0: _user$project$View$buttonsStyle,
+								_0: _user$project$MenuView$buttonsStyle,
 								_1: {ctor: '[]'}
 							}
 						},
@@ -10460,7 +10665,7 @@ var _user$project$View$menuView = A2(
 								_0: _elm_lang$html$Html_Events$onClick(_user$project$Msg$StartingGameVsCPU),
 								_1: {
 									ctor: '::',
-									_0: _user$project$View$buttonsStyle,
+									_0: _user$project$MenuView$buttonsStyle,
 									_1: {ctor: '[]'}
 								}
 							},
@@ -10471,40 +10676,14 @@ var _user$project$View$menuView = A2(
 							}),
 						_1: {ctor: '[]'}
 					}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$button,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onClick(_user$project$Msg$Rules),
-									_1: {
-										ctor: '::',
-										_0: _user$project$View$buttonsStyle,
-										_1: {ctor: '[]'}
-									}
-								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text('RULES'),
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				}
+				_1: {ctor: '[]'}
 			}
 		}
 	});
 var _user$project$View$view = function (model) {
 	var _p0 = model;
 	if (_p0.ctor === 'Menu') {
-		return _user$project$View$menuView;
+		return _user$project$MenuView$menuView;
 	} else {
 		return _user$project$GameView$gameView(_p0._0);
 	}
@@ -10678,18 +10857,27 @@ var _user$project$Update$update = F2(
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			}
 		} else {
-			var _p7 = A2(_user$project$Update$inGameAction, msg, _p4._0);
-			var ng = _p7._0;
-			var cmd = _p7._1;
-			return {
-				ctor: '_Tuple2',
-				_0: _user$project$Model$InGame(
-					A2(
-						_user$project$Update$vscpu,
-						ng,
-						_user$project$CPU$cpuAction(ng))),
-				_1: cmd
-			};
+			var _p7 = msg;
+			if (_p7.ctor === 'GoToMenu') {
+				return {
+					ctor: '_Tuple2',
+					_0: _user$project$Model$Menu(0),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			} else {
+				var _p8 = A2(_user$project$Update$inGameAction, msg, _p4._0);
+				var ng = _p8._0;
+				var cmd = _p8._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _user$project$Model$InGame(
+						A2(
+							_user$project$Update$vscpu,
+							ng,
+							_user$project$CPU$cpuAction(ng))),
+					_1: cmd
+				};
+			}
 		}
 	});
 var _user$project$Subscription$timePerTick = 0.1;
